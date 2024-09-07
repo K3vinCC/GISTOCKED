@@ -6,4 +6,6 @@ router.register(r'/categoria',views.CategoriaViewSet)
 
 urlpatterns= [
     path('',include(router.urls))
+
+    
 ]
