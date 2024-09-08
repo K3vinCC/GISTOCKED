@@ -2,14 +2,21 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar } from 'react-native';
 
 export default function App() {
+  const data = [
+    { id: '1', codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', precio: 4500, stock: 15 },
+    { id: '2', codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', precio: 4500, stock: 15 },
+    { id: '3', codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', precio: 4500, stock: 15 },
+  ];
+
   const renderItem = ({ item }) => (
     <View style={styles.productContainer}>
       <View style={styles.imagePlaceholder} />
       <View style={styles.productDetails}>
-        <Text>nombre: {item.name}</Text>
-        <Text>marca: {item.brand}</Text>
-        <Text>precio venta: $ {item.price}</Text>
-        <Text>stock: {item.stock} unidades</Text>
+        <Text style={{ color: 'white' }}>codigo: {item.codigo}</Text>
+        <Text style={{ color: 'white' }}>nombre: {item.nombre}</Text>
+        <Text style={{ color: 'white' }}>marca: {item.marca}</Text>
+        <Text style={{ color: 'white' }}>precio venta: $ {item.precio}</Text>
+        <Text style={{ color: 'white' }}>stock: {item.stock} unidades</Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button}>
@@ -35,10 +42,15 @@ export default function App() {
 
         <View style={styles.searchBar}>
           <TextInput style={styles.searchInput} placeholder="Buscar..." />
+          <Button  title="buscar" onPress={() => {}} />
           <Button title="filtrar" onPress={() => {}} />
-          <TextInput style={styles.categoryInput} placeholder="categoría: xxxxx" />
         </View>
 
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
       </View>
     </SafeAreaView>
   );
@@ -65,7 +77,7 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 15,
     backgroundColor: '#e0e0e0',
   },
   searchInput: {
@@ -100,16 +112,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#4B5A6C',
     padding: 10,
     borderRadius: 5,
+    color: '#fff',
+    
   },
   buttonContainer: {
     justifyContent: 'space-around',
     marginLeft: 10,
+    
+    
   },
   button: {
     backgroundColor: '#f28b82',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
+    
   },
   buttonText: {
     color: '#fff',
