@@ -7,21 +7,6 @@ export default (props) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView  style={styles.scrollView}>
-				<View style={styles.row}>
-					<Image
-						source={require('../../assets/images/INICIO/menu.png')}
-						resizeMode = {"stretch"}
-						style={styles.image}
-					/>
-					<Text style={styles.text}>
-						{"Inicio"}
-					</Text>
-					<Image
-						source={require('../../assets/images/INICIO/notif.png')}
-						resizeMode = {"stretch"}
-						style={styles.image2}
-					/>
-				</View>
 				<View style={styles.row2}>
 					<View style={styles.column}>
 					    <TouchableOpacity onPress={() => navigation.navigate('Home1')}>
@@ -81,6 +66,7 @@ export default (props) => {
 					</View>
 				</View>
 				<View style={styles.column3}>
+				<TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
 					<Image
 						source={require('../../assets/images/INICIO/ajustes.png')}
 						resizeMode = {"stretch"}
@@ -92,6 +78,7 @@ export default (props) => {
 					<Text style={styles.text3}>
 						{"Configura tus preferencias de la app o tu usuario"}
 					</Text>
+				</TouchableOpacity>
 				</View>
 				<View style={styles.row3}>
 					<Image
