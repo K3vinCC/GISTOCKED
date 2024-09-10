@@ -6,7 +6,7 @@ export default (props) => {
 			<ScrollView  style={styles.scrollView}>
 				<View style={styles.row2}>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/perfil.png')}
+						source={require('../../assets/CONFIG/perfil.png')}
 						resizeMode = {"stretch"}
 						style={styles.image2}
 					/>
@@ -16,7 +16,7 @@ export default (props) => {
 				</View>
 				<View style={styles.row3}>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/param.png')}
+						source={require('../../assets/CONFIG/param.png')}
 						resizeMode = {"stretch"}
 						style={styles.image3}
 					/>
@@ -26,27 +26,27 @@ export default (props) => {
 				</View>
 				<View style={styles.row4}>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/home.png')}
+						source={require('../../assets/CONFIG/home.png')}
 						resizeMode = {"stretch"}
 						style={styles.image4}
 					/>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/analis.png')}
+						source={require('../../assets/CONFIG/analis.png')}
 						resizeMode = {"stretch"}
 						style={styles.image5}
 					/>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/inv.png')}
+						source={require('../../assets/CONFIG/inv.png')}
 						resizeMode = {"stretch"}
 						style={styles.image6}
 					/>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/conf.png')}
+						source={require('../../assets/CONFIG/conf.png')}
 						resizeMode = {"stretch"}
 						style={styles.image7}
 					/>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/CONFIG/usrr.png')}
+						source={require('../../assets/CONFIG/usrr.png')}
 						resizeMode = {"stretch"}
 						style={styles.image8}
 					/>

@@ -11,7 +11,7 @@ export default (props) => {
 					<View style={styles.column}>
 					    <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
                             <Image
-                                source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/INICIO/ajustes.png')}
+                                source={require('../../assets/INICIO/ajustes.png')}
                                 resizeMode = {"stretch"}
                                 style={styles.image3}
                             />
@@ -25,7 +25,7 @@ export default (props) => {
 					</View>
 					<View style={styles.column}>
 						<Image
-							source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/INICIO/venta.png')}
+							source={require('../../assets/INICIO/venta.png')}
 							resizeMode = {"stretch"}
 							style={styles.image3}
 						/>
@@ -40,7 +40,7 @@ export default (props) => {
 				<View style={styles.row2}>
 					<View style={styles.column}>
 						<Image
-							source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/INICIO/analisis.png')}
+							source={require('../../assets/INICIO/analisis.png')}
 							resizeMode = {"stretch"}
 							style={styles.image3}
 						/>
@@ -53,7 +53,7 @@ export default (props) => {
 					</View>
 					<View style={styles.column}>
 						<Image
-							source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/INICIO/user.png')}
+							source={require('../../assets/INICIO/user.png')}
 							resizeMode = {"stretch"}
 							style={styles.image3}
 						/>
@@ -68,7 +68,7 @@ export default (props) => {
 				<View style={styles.column3}>
 				<TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
 					<Image
-						source={require('C:/Users/corte/Desktop/kacece/GISTOCKED/GestionInventario/assets/INICIO/ajustes.png')}
+						source={require('../../assets/INICIO/ajustes.png')}
 						resizeMode = {"stretch"}
 						style={styles.image3}
 					/>
