@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/screens/Login'
+import Perfil from './src/screens/Pefil';
 
 import Home from './src/screens/Home';
 import Home1 from './src/screens/Home1'; // Assuming you'll create this for testing
@@ -25,6 +26,7 @@ const App = () => {
                                                                                  headerTitleStyle: {
                                                                                    fontWeight: 'bold',}}}/>
         <Stack.Screen name="inventario" component={Ginventario} />
+        <Stack.Screen name="Perfil" component={Perfil} />
       </Stack.Navigator>
     </NavigationContainer>
   );
