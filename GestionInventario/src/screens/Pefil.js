@@ -5,24 +5,30 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function ProfileScreen() {
+
+export default function Perfil({ navigation }) {
   // Estado inicial para los datos de perfil y la imagen de perfil
-  const [profileImage, setProfileImage] = useState(null);
-  const [name, setName] = useState('Usuario1');
-  const [phone, setPhone] = useState('+569 8765 4321');
-  const [email, setEmail] = useState('Unimentor@gmail.com');
+  // const [profileImage, setProfileImage] = useState(null);
+  // const [name, setName] = useState('Usuario1');
+  // const [phone, setPhone] = useState('+569 8765 4321');
+  // const [email, setEmail] = useState('Unimentor@gmail.com');
+
+  const profileImage = null;
+  const name = 'Usuario1';
+  const phone = '+569 8765 4321';
+  const email = 'Unimentor@gmail.com';
 
   // Solicitar permisos para acceder a la galería
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Se requieren permisos para acceder a la galería.');
-        }
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (Platform.OS !== 'web') {
+  //       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //       if (status !== 'granted') {
+  //         alert('Se requieren permisos para acceder a la galería.');
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
   // Función para seleccionar una imagen de la galería
   const pickImage = async () => {
@@ -97,8 +103,8 @@ export default function ProfileScreen() {
 
       {/* Barra de navegación inferior */}
       <View style={styles.navBar}>
-        <TouchableOpacity>
-          <AntDesign name="home" size={30} color="#00268F" />
+        <TouchableOpacity >
+          <AntDesign name="home" size={30} color="#00268F" onPress={() => navigation.navigate('Inicio')} />
         </TouchableOpacity>
         <TouchableOpacity>
           <AntDesign name="linechart" size={30} color="#00268F" />
@@ -179,12 +185,23 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  // navBar: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-around',
+  //   paddingVertical: 10,
+  //   borderTopWidth: 1,
+  //   borderColor: '#ddd',
+  //   backgroundColor: '#fff',
+  // },
   navBar: {
+
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
+    // Position the navbar at the bottom using absolute positioning
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
