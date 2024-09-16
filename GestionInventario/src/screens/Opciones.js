@@ -1,19 +1,25 @@
 import React from "react";
-import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, } from "react-native";
+import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+
 export default (props) => {
+	
+    const navigation = useNavigation();
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView  style={styles.scrollView}>
+			<TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
 				<View style={styles.row2}>
 					<Image
-						source={require('../../assets/CONFIG/perfil.png')}
-						resizeMode = {"stretch"}
-						style={styles.image2}
+					source={require('../../assets/CONFIG/perfil.png')}
+					resizeMode="stretch"
+					style={styles.image2}
 					/>
 					<Text style={styles.text2}>
-						{"Perfil"}
+					{"Perfil"}
 					</Text>
 				</View>
+			</TouchableOpacity>
 				<View style={styles.row3}>
 					<Image
 						source={require('../../assets/CONFIG/param.png')}

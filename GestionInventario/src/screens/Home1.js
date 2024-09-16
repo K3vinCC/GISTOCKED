@@ -58,13 +58,13 @@ export default (props) => {
 						<Image
 							source={require('../../assets/INICIO/analisis.png')}
 							resizeMode = {"stretch"}
-							style={styles.image3}
+							style={styles.image4}
 						/>
 						<Text style={styles.text6}>
 							{"Análisis de ventas"}
 						</Text>
-						<Text style={styles.text3}>
-							{"Inspecciona los gráficos de ventas de productos"}
+						<Text style={styles.text7}>
+							{"Inspecciona los\ngráficos de ventas de productos"}
 						</Text>
 						</TouchableOpacity>
 					</View>
