@@ -22,6 +22,7 @@ const App = () => {
                                                                                  headerTitleStyle: {
                                                                                    fontWeight: 'bold',}}}/>
         <Stack.Screen name="inventario" component={Ginventario} />
+        <Stack.Screen name="Ainventario" component={Ainventario} />
       </Stack.Navigator>
     </NavigationContainer>
   );

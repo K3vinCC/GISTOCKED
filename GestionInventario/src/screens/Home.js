@@ -39,6 +39,7 @@ export default (props) => {
 				</View>
 				<View style={styles.row2}>
 					<View style={styles.column}>
+						<TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
 						<Image
 							source={require('../../assets/INICIO/analisis.png')}
 							resizeMode = {"stretch"}
@@ -50,6 +51,7 @@ export default (props) => {
 						<Text style={styles.text3}>
 							{"Inspecciona los gráficos de ventas de productos"}
 						</Text>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.column}>
 						<Image
