@@ -1,14 +1,40 @@
 import React, { useContext } from "react";
+import { useEffect } from 'react';
 import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
+import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
+import { useFonts } from 'expo-font';
 
-// Obtener las dimensiones de la pantalla
 const { width } = Dimensions.get('window');
 
 export default (props) => {
   const { isDarkMode } = useContext(ThemeContext);
   const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({
+    'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Bold': require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
+  useEffect(() => {
+    async function prepare() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    }
+    prepare();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    console.log("Fonts not loaded yet...");
+    return null;
+  };
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: isDarkMode ? '#16202C' : '#34495E',
+      }, headerTintColor: isDarkMode ? '#16202C' : '#34495E',
+    });
+  }, [isDarkMode, navigation]);
 
   return (
     <SafeAreaView style={isDarkMode ? styles2.container : styles.container}>
@@ -126,16 +152,19 @@ const styles = StyleSheet.create({
  marginBottom: -10,// Margen superior para alinear las imágenes
   },
   text2: {
+    fontFamily: "Roboto-Bold",
     color: "#000000",
     fontSize: 18,
     textAlign: "center", // Asegura que el texto principal esté alineado en todos
   },
   text4: {
+    fontFamily: "Roboto-Medium",
     color: "#000000",
     fontSize: 18,
     textAlign: "center", // Asegura que el texto principal esté alineado en todos
   },
   text3: {
+    fontFamily: "Roboto-Medium",
     color: "#34495E",
     fontSize: 14,
     textAlign: "center",
@@ -149,39 +178,54 @@ const styles = StyleSheet.create({
 const styles2 = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#16202C",
   },
   row2: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginVertical: 20,
+    marginVertical: 10,
   },
   column: {
-    width: width * 0.4, 
-    height: width * 0.55, 
-    backgroundColor: "#D8D8D8",
+    width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
+    height: width * 0.55, // Incrementa la altura para más espacio vertical
+    backgroundColor: "#213142",
     borderRadius: 20,
     padding: 10,
-    justifyContent: "flex-start", 
+    justifyContent: "flex-start", // Alinea todo el contenido al inicio
     alignItems: "center",
+    borderColor: '#009679',
+    borderWidth: 1,            // Thickness of the outer line (border)
+    borderRadius: 10,          // Optional: Adds rounded corners
   },
   image: {
-    width: "50%", 
-    height: "50%", 
-    marginBottom: 10,
-    marginTop: 10, 
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+	marginTop: -10,
+	marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  image2: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+ marginBottom: -10,// Margen superior para alinear las imágenes
   },
   text2: {
-    color: "#FFFFFF",
+    fontFamily: "Roboto-Bold",
+    color: "#EDF1F1",
     fontSize: 18,
-    textAlign: "center",
-    marginTop: 10, 
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text4: {
+    fontFamily: "Roboto-Medium",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
   },
   text3: {
-    color: "#B0B0B0",
+    fontFamily: "Roboto-Medium",
+    color: "#D8D8D8",
     fontSize: 14,
     textAlign: "center",
-    marginTop: 5, 
+ // Espacio debajo del texto principal
   },
   scrollView: {
     paddingVertical: 20,
