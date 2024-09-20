@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from './src/screens/Login';
 import Perfil from './src/screens/Pefil';
-
+import AgregarUsuario from './src/screens/agregarUsuario';
 
 
 
@@ -30,6 +30,7 @@ const App = () => {
                                                                                    fontWeight: 'bold',}}}/>
         <Stack.Screen name="inventario" component={Ginventario} />
         <Stack.Screen name="Perfil" component={Perfil} />
+        <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

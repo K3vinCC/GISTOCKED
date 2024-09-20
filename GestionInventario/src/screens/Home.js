@@ -52,17 +52,19 @@ export default (props) => {
 						</Text>
 					</View>
 					<View style={styles.column}>
-						<Image
-							source={require('../../assets/INICIO/user.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text8}>
-							{"Usuarios"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Añade, edita o elimina usuarios"}
-						</Text>
+						<TouchableOpacity  onPress={() => navigation.navigate('AgregarUsuarios')}>
+							<Image
+								source={require('../../assets/INICIO/user.png')}
+								resizeMode = {"stretch"}
+								style={styles.image3}
+							/>
+							<Text style={styles.text8}>
+								{"Usuarios"}
+							</Text>
+							<Text style={styles.text3}>
+								{"Añade, edita o elimina usuarios"}
+							</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 				<View style={styles.column3}>
