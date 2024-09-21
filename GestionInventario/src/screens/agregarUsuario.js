@@ -41,7 +41,7 @@ const AgregarUsuario = () => {
         renderItem={({ item }) => (
           <View style={styles.usuarioItem}>
             <Text style={styles.nombre}>{item.nombre}</Text>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.buttonEditar}>
               <Text style={styles.buttonText}>Editar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       padding:  
    16,
-      backgroundColor: '#333',
+      backgroundColor: '#34495E',
     },
     title: {
       color: '#fff',
@@ -99,8 +99,13 @@ const styles = StyleSheet.create({
     nombre: {
       fontWeight: 'bold',
     },
+    buttonEditar: {
+      backgroundColor: '#34495E',
+      padding: 5,
+      borderRadius: 3,
+    },
     button: {
-      backgroundColor: '#e74c3c',
+      backgroundColor: '#E17055',
       padding: 5,
       borderRadius: 3,
     },
