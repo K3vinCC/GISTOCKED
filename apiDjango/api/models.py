@@ -1,15 +1,18 @@
 from django.db import models
 
-class CategoriaRev(models.Model):
-    id = models.AutoField(primary_key=True)  # Asegúrate de usar 'id' como la clave primaria
-    id_categoria = models.IntegerField()
-    nombre_categoria = models.CharField(max_length=50)
-    estado = models.CharField(max_length=50, blank=True, null=True)
-    descripcion = models.TextField(null=True)  # Si es de tipo TEXT
-    created_at = models.DateTimeField(auto_now_add=True)
+from django.contrib.auth.hashers import make_password, check_password
+
+class Usuario(models.Model):
+    nombre = models.CharField(max_length=100)
+    contraseña = models.CharField(max_length=255)  # Ensure this is large enough for hashed passwords
+    rol = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        db_table = 'categoria_rev'  # Especifica el nombre de la tabla en la BD
+        db_table = 'usuario'
+
+    def save(self, *args, **kwargs):
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.nombre_categoria
+        return self.nombre

@@ -43,7 +43,7 @@ export default (props) => {
           <TouchableOpacity onPress={() => navigation.navigate('Inicio1')}>
             <View style={isDarkMode ? styles2.column : styles.column}>
               <Image
-                source={require('../../assets/images/INICIO/inventario.png')}
+                source={require('../../assets/INICIO/inventario.png')}
                 resizeMode="contain"
                 style={isDarkMode ? styles2.image : styles.image}
               />
@@ -57,7 +57,7 @@ export default (props) => {
           </TouchableOpacity>
           <View style={isDarkMode ? styles2.column : styles.column}>
             <Image
-              source={require('../../assets/images/INICIO/venta.png')}
+              source={require('../../assets/INICIO/venta.png')}
               resizeMode="contain"
               style={isDarkMode ? styles2.image : styles.image}
             />
@@ -69,11 +69,11 @@ export default (props) => {
             </Text>
           </View>
         </View>
-
-        <View style={isDarkMode ? styles2.row2 : styles.row2}>
-          <View style={isDarkMode ? styles2.column : styles.column}>
-            <Image
-              source={require('../../assets/images/INICIO/analisis.png')}
+			<View style={isDarkMode ? styles2.row2 : styles.row2}>
+          	<View style={isDarkMode ? styles2.column : styles.column}>
+		  	<TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+			<Image
+              source={require('../../assets/INICIO/analisis.png')}
               resizeMode="contain"
               style={isDarkMode ? styles2.image : styles.image}
             />
@@ -83,10 +83,11 @@ export default (props) => {
             <Text style={isDarkMode ? styles2.text3 : styles.text3}>
               {"Inspecciona los gráficos de ventas de productos"}
             </Text>
+			</TouchableOpacity>
           </View>
           <View style={isDarkMode ? styles2.column : styles.column}>
             <Image
-              source={require('../../assets/images/INICIO/user.png')}
+              source={require('../../assets/INICIO/user.png')}
               resizeMode="contain"
               style={isDarkMode ? styles2.image : styles.image}
             />
@@ -103,7 +104,7 @@ export default (props) => {
           <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
             <View style={isDarkMode ? styles2.column : styles.column}>
               <Image
-                source={require('../../assets/images/INICIO/ajustes.png')}
+                source={require('../../assets/INICIO/ajustes.png')}
                 resizeMode="contain"
                 style={isDarkMode ? styles2.image : styles.image}
               />

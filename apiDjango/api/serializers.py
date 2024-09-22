@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import CategoriaRev
+from .models import Usuario
 
-class CategoriaRevSerializer(serializers.ModelSerializer):
+class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CategoriaRev
-        fields = '__all__'  # Incluye todos los campos del modelo
+        model = Usuario
+        fields = ['id', 'nombre', 'contraseña', 'rol']

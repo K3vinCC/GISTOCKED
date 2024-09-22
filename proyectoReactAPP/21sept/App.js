@@ -1,23 +1,28 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import { useEffect } from 'react';
-import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
-import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen'; 
+
+import Login from './src/screens/Login'
+import Perfil from './src/screens/Pefil';
 
 import Home from './src/screens/Home';
-import Home1 from './src/screens/Home1'; // Assuming you'll create this for testing
+import Home1 from './src/screens/Home1'; 
 import Opciones from './src/screens/Opciones';
+import Ginventario from './src/screens/Ginventario'
+import Ainventario from './src/screens/Ainventario'
 import { enableScreens } from 'react-native-screens';
 import 'react-native-safe-area-context';
 
 import Header1 from './src/components/header1';
-import { ThemeProvider } from './ThemeContext';
+import { ThemeProvider} from './ThemeContext';
+import { useFonts } from 'expo-font';  
 
 const Stack = createStackNavigator();
 enableScreens();
 const App = () => {
-
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'Racing': require('./assets/fonts/RacingSansOne-Regular.ttf'),
@@ -38,7 +43,8 @@ const App = () => {
   return (
     <ThemeProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Inicio">
+      <Stack.Navigator initialRouteName="Inicio Sesion">
+        <Stack.Screen name="Inicio sesion" component={Login}/>
         <Stack.Screen name="Inicio" component={Home} options={{ headerStyle: {
                                                                          backgroundColor: '#34495E',
                                                                       },
@@ -58,6 +64,9 @@ const App = () => {
                                                                                  headerTintColor: '#FFF',
                                                                                  headerTitleStyle: {
                                                                                     fontFamily: 'Racing'}}}/>
+        <Stack.Screen name="inventario" component={Ginventario} />
+        <Stack.Screen name="Ainventario" component={Ainventario} />
+        <Stack.Screen name="Perfil" component={Perfil} />
       </Stack.Navigator>
     </NavigationContainer>
     </ThemeProvider>
