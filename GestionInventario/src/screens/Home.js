@@ -1,113 +1,85 @@
 import React from "react";
-import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, } from "react-native";
+import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet } from "react-native";
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
 export default (props) => {
     const navigation = useNavigation();
-	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView  style={styles.scrollView}>
-				<View style={styles.row2}>
-					<View style={styles.column}>
-					    <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+
+	const userRole = 'admin'; 
+	// const userRole = 'user'; 
+	
+
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.row2}>
+                    <View style={styles.column}>
+                        <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
                             <Image
                                 source={require('../../assets/INICIO/ajustes.png')}
-                                resizeMode = {"stretch"}
+                                resizeMode={"stretch"}
                                 style={styles.image3}
                             />
-                            <Text style={styles.text2}>
-                                {"Inventario"}
-                            </Text>
-                            <Text style={styles.text3}>
-                                {"Edita o inspecciona tu inventario"}
-                            </Text>
+                            <Text style={styles.text2}>{"Inventario"}</Text>
+                            <Text style={styles.text3}>{"Edita o inspecciona tu inventario"}</Text>
                         </TouchableOpacity>
-					</View>
-					<View style={styles.column}>
-						<Image
-							source={require('../../assets/INICIO/venta.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text4}>
-							{"Ventas"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Genera una nueva venta de productos"}
-						</Text>
-					</View>
-				</View>
-				<View style={styles.row2}>
-					<View style={styles.column}>
-						<Image
-							source={require('../../assets/INICIO/analisis.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text6}>
-							{"Análisis de ventas"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Inspecciona los gráficos de ventas de productos"}
-						</Text>
-					</View>
-					<View style={styles.column}>
-						<TouchableOpacity  onPress={() => navigation.navigate('AgregarUsuarios')}>
-							<Image
-								source={require('../../assets/INICIO/user.png')}
-								resizeMode = {"stretch"}
-								style={styles.image3}
-							/>
-							<Text style={styles.text8}>
-								{"Usuarios"}
-							</Text>
-							<Text style={styles.text3}>
-								{"Añade, edita o elimina usuarios"}
-							</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-				<View style={styles.column3}>
-				<TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
-					<Image
-						source={require('../../assets/INICIO/ajustes.png')}
-						resizeMode = {"stretch"}
-						style={styles.image3}
-					/>
-					<Text style={styles.text10}>
-						{"Ajustes"}
-					</Text>
-					<Text style={styles.text3}>
-						{"Configura tus preferencias de la app o tu usuario"}
-					</Text>
-				</TouchableOpacity>
-				</View>
-				<View style={styles.row3}>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image5}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image6}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image7}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image8}
-					/>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
-	)
+                    </View>
+                    <View style={styles.column}>
+                        <Image
+                            source={require('../../assets/INICIO/venta.png')}
+                            resizeMode={"stretch"}
+                            style={styles.image3}
+                        />
+                        <Text style={styles.text4}>{"Ventas"}</Text>
+                        <Text style={styles.text3}>{"Genera una nueva venta de productos"}</Text>
+                    </View>
+                </View>
+
+                <View style={styles.row2}>
+                    <View style={styles.column}>
+                        <Image
+                            source={require('../../assets/INICIO/analisis.png')}
+                            resizeMode={"stretch"}
+                            style={styles.image3}
+                        />
+                        <Text style={styles.text6}>{"Análisis de ventas"}</Text>
+                        <Text style={styles.text3}>{"Inspecciona los gráficos de ventas de productos"}</Text>
+                    </View>
+
+                    {/* Solo mostrar esta sección si el usuario es administrador */}
+                    {userRole === 'admin' && (
+                        <View style={styles.column}>
+                            <TouchableOpacity onPress={() => navigation.navigate('AgregarUsuarios')}>
+                                <Image
+                                    source={require('../../assets/INICIO/user.png')}
+                                    resizeMode={"stretch"}
+                                    style={styles.image3}
+                                />
+                                <Text style={styles.text8}>{"Usuarios"}</Text>
+                                <Text style={styles.text3}>{"Añade, edita o elimina usuarios"}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                </View>
+
+                <View style={styles.column3}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
+                        <Image
+                            source={require('../../assets/INICIO/ajustes.png')}
+                            resizeMode={"stretch"}
+                            style={styles.image3}
+                        />
+                        <Text style={styles.text10}>{"Ajustes"}</Text>
+                        <Text style={styles.text3}>{"Configura tus preferencias de la app o tu usuario"}</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
 }
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
