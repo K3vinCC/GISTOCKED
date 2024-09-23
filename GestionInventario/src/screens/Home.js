@@ -26,15 +26,17 @@ export default (props) => {
                             <Text style={styles.text3}>{"Edita o inspecciona tu inventario"}</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.column}>
-                        <Image
-                            source={require('../../assets/INICIO/venta.png')}
-                            resizeMode={"stretch"}
-                            style={styles.image3}
-                        />
-                        <Text style={styles.text4}>{"Ventas"}</Text>
-                        <Text style={styles.text3}>{"Genera una nueva venta de productos"}</Text>
-                    </View>
+					<TouchableOpacity onPress={() => navigation.navigate('ZonaVenta')}>
+						<View style={styles.column}>
+							<Image
+								source={require('../../assets/INICIO/venta.png')}
+								resizeMode={"stretch"}
+								style={styles.image3}
+							/>
+							<Text style={styles.text4}>{"Ventas"}</Text>
+							<Text style={styles.text3}>{"Genera una nueva venta de productos"}</Text>
+						</View>
+					</TouchableOpacity>
                 </View>
 
                 <View style={styles.row2}>
