@@ -24,98 +24,96 @@ export default (props) => {
     prepare();
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    // Evitar retornar null, muestra una vista de carga en su lugar
-    return (
-      <View>
-        <Text>Loading fonts...</Text>
-      </View>
-    );
-  }
   useEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        backgroundColor: isDarkMode ? '#16202C' : '#34495E',
-      }, headerTintColor: isDarkMode ? '#16202C' : '#34495E',
+        backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
+      }, headerTintColor: isDarkMode ? '#0B1016' : '#34495E',
     });
   }, [isDarkMode, navigation]);
+  
+  const currentStyles = isDarkMode ? styles2 : styles;
 
   return (
-    <SafeAreaView style={isDarkMode ? styles2.container : styles.container}>
-      <ScrollView contentContainerStyle={isDarkMode ? styles2.scrollView : styles.scrollView}>
-        <View style={isDarkMode ? styles2.row2 : styles.row2}>
-          <TouchableOpacity onPress={() => navigation.navigate('Inicio1')}>
-            <View style={isDarkMode ? styles2.column : styles.column}>
+    <SafeAreaView style={currentStyles.container}>
+      <ScrollView contentContainerStyle={currentStyles.scrollView}>
+        <View style={currentStyles.row2}>
+          <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+            <View style={currentStyles.column}>
               <Image
                 source={require('../../assets/INICIO/inventario.png')}
                 resizeMode="contain"
-                style={isDarkMode ? styles2.image : styles.image}
+                style={currentStyles.image}
               />
-              <Text style={isDarkMode ? styles2.text2 : styles.text2}>
+              <Text style={currentStyles.text2}>
                 {"Inventario"}
               </Text>
-              <Text style={isDarkMode ? styles2.text3 : styles.text3}>
+              <Text style={currentStyles.text3}>
                 {"Edita o inspecciona tu inventario"}
               </Text>
             </View>
           </TouchableOpacity>
-          <View style={isDarkMode ? styles2.column : styles.column}>
+          <TouchableOpacity onPress={() => navigation.navigate('Ventas')}>
+          <View style={currentStyles.column}>
             <Image
               source={require('../../assets/INICIO/venta.png')}
               resizeMode="contain"
-              style={isDarkMode ? styles2.image : styles.image}
+              style={currentStyles.image}
             />
-            <Text style={isDarkMode ? styles2.text2 : styles.text2}>
+            <Text style={currentStyles.text2}>
               {"Ventas"}
             </Text>
-            <Text style={isDarkMode ? styles2.text3 : styles.text3}>
+            <Text style={currentStyles.text3}>
               {"Genera una nueva venta de productos"}
             </Text>
           </View>
+          </TouchableOpacity>
         </View>
-			<View style={isDarkMode ? styles2.row2 : styles.row2}>
-          	<View style={isDarkMode ? styles2.column : styles.column}>
-		  	<TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+			<View style={currentStyles.row2}>
+      <TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+          	<View style={currentStyles.column}>
+		  	
 			<Image
               source={require('../../assets/INICIO/analisis.png')}
               resizeMode="contain"
-              style={isDarkMode ? styles2.image : styles.image}
+              style={currentStyles.image}
             />
-            <Text style={isDarkMode ? styles2.text2 : styles.text2}>
+            <Text style={currentStyles.text2}>
               {"Análisis de ventas"}
             </Text>
-            <Text style={isDarkMode ? styles2.text3 : styles.text3}>
+            <Text style={currentStyles.text3}>
               {"Inspecciona los gráficos de ventas de productos"}
             </Text>
-			</TouchableOpacity>
+			
           </View>
-          <View style={isDarkMode ? styles2.column : styles.column}>
+          </TouchableOpacity>
+          <View style={currentStyles.column}>
             <Image
               source={require('../../assets/INICIO/user.png')}
               resizeMode="contain"
-              style={isDarkMode ? styles2.image : styles.image}
+              style={currentStyles.image}
             />
-            <Text style={isDarkMode ? styles2.text2 : styles.text2}>
+            <Text style={currentStyles.text2}>
               {"Usuarios"}
             </Text>
-            <Text style={isDarkMode ? styles2.text3 : styles.text3}>
+            <Text style={currentStyles.text3}>
               {"Añade, edita o elimina usuarios"}
             </Text>
           </View>
         </View>
         
-        <View style={isDarkMode ? styles2.row2 : styles.row2}>
+        <View style={currentStyles.row2}>
           <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
-            <View style={isDarkMode ? styles2.column : styles.column}>
+            <View style={currentStyles.column}>
               <Image
                 source={require('../../assets/INICIO/ajustes.png')}
                 resizeMode="contain"
-                style={isDarkMode ? styles2.image : styles.image}
+                style={currentStyles.image}
               />
-              <Text style={isDarkMode ? styles2.text2 : styles.text2}>
+              <Text style={currentStyles.text2}>
                 {"Ajustes"}
               </Text>
-              <Text style={isDarkMode ? styles2.text3 : styles.text3}>
+              <Text style={currentStyles.text3}>
                 {"Configura tus preferencias de la app o tu usuario"}
               </Text>
             </View>
@@ -183,7 +181,7 @@ const styles = StyleSheet.create({
 const styles2 = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#16202C",
+    backgroundColor: "#0B1016",
   },
   row2: {
     flexDirection: "row",
@@ -193,7 +191,7 @@ const styles2 = StyleSheet.create({
   column: {
     width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
     height: width * 0.55, // Incrementa la altura para más espacio vertical
-    backgroundColor: "#213142",
+    backgroundColor: "#16202C",
     borderRadius: 20,
     padding: 10,
     justifyContent: "flex-start", // Alinea todo el contenido al inicio
@@ -215,7 +213,7 @@ const styles2 = StyleSheet.create({
   },
   text2: {
     fontFamily: "Roboto-Bold",
-    color: "#EDF1F1",
+    color: "#506D8A",
     fontSize: 18,
     textAlign: "center", // Asegura que el texto principal esté alineado en todos
   },
@@ -227,7 +225,7 @@ const styles2 = StyleSheet.create({
   },
   text3: {
     fontFamily: "Roboto-Medium",
-    color: "#D8D8D8",
+    color: "#34495E",
     fontSize: 14,
     textAlign: "center",
  // Espacio debajo del texto principal

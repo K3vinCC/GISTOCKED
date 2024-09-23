@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar, Modal, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../../ThemeContext';
 
 
 export default function App() {
@@ -14,10 +16,25 @@ export default function App() {
     { id: '6', imagen: 'https://www.recreoviral.com/wp-content/uploads/2015/06/Animales-posando-para-la-foto-15.jpg' ,codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
   ];
 
+  const { isDarkMode } = useContext(ThemeContext);
+  const navigation = useNavigation();
+
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
+      }, headerTintColor:  '#FFF',
+    });
+  }, [isDarkMode, navigation]);
+  
+  const currentStyles = isDarkMode ? styles2 : styles;
+
+
   const renderItem = ({ item }) => (
-    <View style={styles.productContainer}>
-      <Image style={styles.productImage} source={{ uri: item.imagen }} />
-      <View style={styles.productDetails}>
+    <View style={currentStyles.productContainer}>
+      <Image style={currentStyles.productImage} source={{ uri: item.imagen }} />
+      <View style={currentStyles.productDetails}>
         <Text style={{ color: 'white' }}>id: {item.id}</Text>
         <Text style={{ color: 'white' }}>codigo: {item.codigo}</Text>
         <Text style={{ color: 'white' }}>nombre: {item.nombre}</Text>
@@ -25,35 +42,35 @@ export default function App() {
         <Text style={{ color: 'white' }}>precio venta: $ {item.precioventaf}</Text>
         <Text style={{ color: 'white' }}>stock: {item.stock} unidades</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>editar</Text>
+      <View style={currentStyles.buttonContainer}>
+        <TouchableOpacity style={currentStyles.button}>
+          <Text style={currentStyles.buttonText}>editar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>eliminar</Text>
+        <TouchableOpacity style={currentStyles.button}>
+          <Text style={currentStyles.buttonText}>eliminar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.button}
+          style={currentStyles.button}
           onPress={() => {
             setSelectedProduct(item);
             setModalVisible(true);
           }}
         >
-          <Text style={styles.buttonText}>Detalles</Text>
+          <Text style={currentStyles.buttonText}>Detalles</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={currentStyles.safeArea}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
+      <View style={currentStyles.container}>
 
-        <View style={styles.searchBar}>
-          <TextInput style={styles.searchInput} placeholder="Buscar por nombre..." />
-          <Button title="buscar" onPress={() => {}} />
-          <Button title="filtrar" onPress={() => {}} />
+        <View style={currentStyles.searchBar}>
+          <TextInput style={currentStyles.searchInput} placeholder="Buscar por nombre..." placeholderTextColor={isDarkMode ? "#506D8A" : "#FFF"}/>
+          <Button title="buscar" color="#E17055" onPress={() => {}} />
+          <Button title="filtrar" color="#E17055" onPress={() => {}} />
         </View>
 
         <FlatList
@@ -71,34 +88,34 @@ export default function App() {
               setModalVisible(!modalVisible);
             }}
           >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+            <View style={currentStyles.modalContainer}>
+              <View style={currentStyles.modalContent}>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={currentStyles.closeButton}>
                   <Text style={{ fontSize: 18 }}>×</Text>
                 </TouchableOpacity>
-                <Image style={styles.productImage} source={{ uri: selectedProduct.imagen }} />
-                <Text style={styles.modalText}>codigo:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.codigo} editable={false} />
-                <Text style={styles.modalText}>nombre:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.nombre} editable={false} />
-                <Text style={styles.modalText}>marca:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.marca} editable={false} />
-                <Text style={styles.modalText}>categoria:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.categoria} editable={false} />
-                <Text style={styles.modalText}>subcategoria:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.subcategoria} editable={false} />
-                <Text style={styles.modalText}>stock (unidades):</Text>
-                <TextInput style={styles.modalInput} value={`${selectedProduct.stock}`} editable={false} />
-                <Text style={styles.modalText}>precio compra:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.preciocompra}`} editable={false} />
-                <Text style={styles.modalText}>porcentaje ganancia:</Text>
-                <TextInput style={styles.modalInput} value={`${selectedProduct.porcentajeganancia} %`} editable={false} />
-                <Text style={styles.modalText}>precio neto:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioneto}`} editable={false} />
-                <Text style={styles.modalText}>precio venta:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioventa}`} editable={false} />
-                <Text style={styles.modalText}>precio venta final:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioventaf}`} editable={false} />
+                <Image style={currentStyles.productImage} source={{ uri: selectedProduct.imagen }} />
+                <Text style={currentStyles.modalText}>codigo:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.codigo} editable={false} />
+                <Text style={currentStyles.modalText}>nombre:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.nombre} editable={false} />
+                <Text style={currentStyles.modalText}>marca:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.marca} editable={false} />
+                <Text style={currentStyles.modalText}>categoria:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.categoria} editable={false} />
+                <Text style={currentStyles.modalText}>subcategoria:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.subcategoria} editable={false} />
+                <Text style={currentStyles.modalText}>stock (unidades):</Text>
+                <TextInput style={currentStyles.modalInput} value={`${selectedProduct.stock}`} editable={false} />
+                <Text style={currentStyles.modalText}>precio compra:</Text>
+                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.preciocompra}`} editable={false} />
+                <Text style={currentStyles.modalText}>porcentaje ganancia:</Text>
+                <TextInput style={currentStyles.modalInput} value={`${selectedProduct.porcentajeganancia} %`} editable={false} />
+                <Text style={currentStyles.modalText}>precio neto:</Text>
+                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioneto}`} editable={false} />
+                <Text style={currentStyles.modalText}>precio venta:</Text>
+                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioventa}`} editable={false} />
+                <Text style={currentStyles.modalText}>precio venta final:</Text>
+                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioventaf}`} editable={false} />
               </View>
             </View>
           </Modal>
@@ -163,7 +180,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   button: {
-    backgroundColor: '#f28b82',
+    backgroundColor: '#E17055',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,
@@ -176,6 +193,111 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#4B5A6C',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'left',
+  },
+  closeButton: {
+    alignSelf: 'flex-end',
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+  },
+  modalText: {
+    fontSize: 5,
+    marginVertical: 2,
+    color:"#fff",
+    fontSize: 8,
+  },
+  modalInput: {
+    width: '80%',
+    color:"#fff",
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 5,
+  },
+});
+
+const styles2 = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#5A6D7C',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#0B1016',
+  },
+  header: {
+    backgroundColor: '#5A6D7C',
+    padding: 15,
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#0B1016',
+  },
+  searchInput: {
+    backgroundColor: "#16202C",
+    flex: 1,
+    borderColor: '#009679',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginRight: 10,
+    
+  },
+  productContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#16202C',
+    marginVertical: 5,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: '#009679',
+    borderWidth: 1,   
+  },
+  imagePlaceholder: {
+    width: 50,
+    height: 50,
+    backgroundColor: '#fff',
+    marginRight: 10,
+  },
+  productDetails: {
+    flex: 1,
+    backgroundColor: '#4B5A6C',
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonContainer: {
+    justifyContent: 'space-around',
+    marginLeft: 10,
+  },
+  button: {
+    backgroundColor: '#E17055',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+  },
+ modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    
   },
   modalContent: {
     width: '80%',
