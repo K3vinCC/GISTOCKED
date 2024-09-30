@@ -6,6 +6,7 @@ import Perfil from './src/screens/Pefil';
 import AgregarUsuario from './src/screens/agregarUsuario';
 import SalesScreen from './src/screens/zonaVenta';
 
+import ListaUsuarios from './src/screens/ListaUsuario';
 
 
 import Home from './src/screens/Home'; 
@@ -33,6 +34,8 @@ const App = () => {
         <Stack.Screen name="Perfil" component={Perfil} />
         <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
         <Stack.Screen name='ZonaVenta' component={SalesScreen}/>
+        <Stack.Screen name='ListaUsuarios' component={ListaUsuarios}/>
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-^8@_oq2e3&g-^1-&sr6__yfs(z9&o3i70b&y$sa#&s&myxox1g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = ["192.168.1.10:8081" ] correr api -> python manage.py runserver 192.168.1.10:8000
+ALLOWED_HOSTS = ['192.168.1.10']
 
 # Application definition
 
@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'coreapi',
+    "corsheaders",
     'api'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -129,3 +131,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
 	'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
+
+
+
+CORS_ORIGIN_ALLOW_ALL = True
