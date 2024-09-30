@@ -74,8 +74,6 @@ export default function Login({ navigation }) {
             <Text style={styles.buttonText}>Iniciar sesión</Text>
           </TouchableOpacity>
         </View>
-
-        <Text style={styles.orText}>O</Text>
       </View>
     </View>
   );

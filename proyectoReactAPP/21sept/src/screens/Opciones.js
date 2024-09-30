@@ -45,33 +45,7 @@ export default (props) => {
 					</Text>
 				</View>
 				</TouchableOpacity>
-				<View style={currentStyles.row4}>
-					<Image
-						source={require('../../assets/CONFIG/home.png')}
-						resizeMode = {"stretch"}
-						style={currentStyles.image4}
-					/>
-					<Image
-						source={require('../../assets/CONFIG/analis.png')}
-						resizeMode = {"stretch"}
-						style={currentStyles.image5}
-					/>
-					<Image
-						source={require('../../assets/CONFIG/inv.png')}
-						resizeMode = {"stretch"}
-						style={currentStyles.image6}
-					/>
-					<Image
-						source={require('../../assets/CONFIG/conf.png')}
-						resizeMode = {"stretch"}
-						style={currentStyles.image7}
-					/>
-					<Image
-						source={require('../../assets/CONFIG/usrr.png')}
-						resizeMode = {"stretch"}
-						style={currentStyles.image8}
-					/>
-				</View>
+				
 			</ScrollView>
 		</SafeAreaView>
 	)

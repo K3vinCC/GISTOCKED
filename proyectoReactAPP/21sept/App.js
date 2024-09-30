@@ -13,6 +13,7 @@ import Home1 from './src/screens/Home1';
 import Opciones from './src/screens/Opciones';
 import Ginventario from './src/screens/Ginventario'
 import Ainventario from './src/screens/Ainventario'
+import AgregarUsuario from './src/screens/agregarUsuario';
 
 import { enableScreens } from 'react-native-screens';
 import 'react-native-safe-area-context';
@@ -68,6 +69,7 @@ const App = () => {
         <Stack.Screen name="inventario" component={Ginventario} />
         <Stack.Screen name="Ainventario" component={Ainventario} />
         <Stack.Screen name="Perfil" component={Perfil} />
+        <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
         <Stack.Screen name="Ventas" component={ZVentas} />
       </Stack.Navigator>
     </NavigationContainer>

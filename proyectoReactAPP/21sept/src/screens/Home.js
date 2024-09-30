@@ -1,20 +1,25 @@
 import React, { useContext } from "react";
 import { useEffect } from 'react';
-import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
 import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
 import { useFonts } from 'expo-font';
 
 const { width } = Dimensions.get('window');
-
+SplashScreen.preventAutoHideAsync();
 export default (props) => {
+  const userRole = 'admin'; 
   const { isDarkMode } = useContext(ThemeContext);
   const navigation = useNavigation();
+
+  // useFonts se debe llamar de manera incondicional
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
     'Roboto-Bold': require('../../assets/fonts/Roboto-Bold.ttf'),
   });
+
+  // Mover la lógica de hideAsync al mismo nivel del hook useEffect
   useEffect(() => {
     async function prepare() {
       if (fontsLoaded) {
@@ -24,15 +29,19 @@ export default (props) => {
     prepare();
   }, [fontsLoaded]);
 
+
+
   useEffect(() => {
     navigation.setOptions({
       headerStyle: {
         backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
-      }, headerTintColor: isDarkMode ? '#0B1016' : '#34495E',
+      }, 
+      headerTintColor: isDarkMode ? '#0B1016' : '#34495E',
     });
   }, [isDarkMode, navigation]);
-  
+
   const currentStyles = isDarkMode ? styles2 : styles;
+
 
   return (
     <SafeAreaView style={currentStyles.container}>
@@ -87,22 +96,6 @@ export default (props) => {
 			
           </View>
           </TouchableOpacity>
-          <View style={currentStyles.column}>
-            <Image
-              source={require('../../assets/INICIO/user.png')}
-              resizeMode="contain"
-              style={currentStyles.image}
-            />
-            <Text style={currentStyles.text2}>
-              {"Usuarios"}
-            </Text>
-            <Text style={currentStyles.text3}>
-              {"Añade, edita o elimina usuarios"}
-            </Text>
-          </View>
-        </View>
-        
-        <View style={currentStyles.row2}>
           <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
             <View style={currentStyles.column}>
               <Image
@@ -118,6 +111,24 @@ export default (props) => {
               </Text>
             </View>
           </TouchableOpacity>
+        </View>
+        
+        <View style={currentStyles.row2}>
+          {userRole === 'admin' && (
+                      <TouchableOpacity onPress={() => navigation.navigate('AgregarUsuarios')}>
+                        <View style={currentStyles.column}>
+                            
+                                <Image
+                                    source={require('../../assets/INICIO/user.png')}
+                                    resizeMode="contain"
+                                    style={currentStyles.image}
+                                />
+                                <Text style={currentStyles.text2}>{"Usuarios"}</Text>
+                                <Text style={currentStyles.text3}>{"Añade, edita o elimina usuarios"}</Text>
+                            
+                        </View>
+                        </TouchableOpacity>
+                    )}
         </View>
       </ScrollView>
     </SafeAreaView>
