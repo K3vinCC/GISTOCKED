@@ -7,6 +7,7 @@ import AgregarUsuario from './src/screens/agregarUsuario';
 import SalesScreen from './src/screens/zonaVenta';
 
 import ListaUsuarios from './src/screens/ListaUsuario';
+import RecuperarContraseña from './src/screens/RecuperarContraseña';
 
 
 import Home from './src/screens/Home'; 
@@ -35,6 +36,7 @@ const App = () => {
         <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
         <Stack.Screen name='ZonaVenta' component={SalesScreen}/>
         <Stack.Screen name='ListaUsuarios' component={ListaUsuarios}/>
+        <Stack.Screen name='RecuperarContraseña' component={RecuperarContraseña}/>
         
       </Stack.Navigator>
     </NavigationContainer>

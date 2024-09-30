@@ -51,6 +51,10 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity onPress={() => navigation.navigate('RecuperarContraseña')}>
+          <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
+        </TouchableOpacity>
+
         <Text style={styles.orText}>O</Text>
 
         <TouchableOpacity style={styles.googleButton}>
@@ -63,94 +67,99 @@ export default function Login({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#34495E',
-        alignItems: 'center',
-        justifyContent: 'center',
-      },
-      title: {
-        fontSize: 48,
-        fontWeight: 'Racing Sans One',
-        marginBottom: 40,
-      },
-      titleOrange: {
-        color: '#e17055',
-      },
-      titleWhite: {
-        color: '#dfe6e9',
-      },
-      titleGreen: {
-        color: '#00b894',
-      },
-      formContainer: {
-        width: '90%',
-        backgroundColor: '#ecf0f1',
-        borderRadius: 20,
-        padding: 20,
-        alignItems: 'center',
-      },
-      avatar: {
-        marginBottom: 20,
-      },
-      inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#34495E',
-        borderRadius: 30,
-        paddingHorizontal: 15,
-        marginVertical: 10,
-        width: '100%',
-      },
-      icon: {
-        marginRight: 10,
-      },
-      input: {
-        flex: 1,
-        height: 50,
-        color: 'white',
-      },
-      buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        marginVertical: 20,
-      },
-      loginButton: {
-        backgroundColor: '#E17055',
-        borderRadius: 30,
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-      },
-      registerButton: {
-        backgroundColor: '#E17055',
-        borderRadius: 30,
-        paddingVertical: 10,
-        paddingHorizontal: 30,
-      },
-      buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-      },
-      orText: {
-        color: '#636e72',
-        fontSize: 18,
-        marginVertical: 20,
-      },
-      googleButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#db4437',
-        borderRadius: 30,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        width: '100%',
-        justifyContent: 'center',
-      },
-      googleButtonText: {
-        color: 'white',
-        fontWeight: 'bold',
-        marginLeft: 10,
-      },
+  container: {
+    flex: 1,
+    backgroundColor: '#34495E',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 48,
+    fontWeight: 'Racing Sans One',
+    marginBottom: 40,
+  },
+  titleOrange: {
+    color: '#e17055',
+  },
+  titleWhite: {
+    color: '#dfe6e9',
+  },
+  titleGreen: {
+    color: '#00b894',
+  },
+  formContainer: {
+    width: '90%',
+    backgroundColor: '#ecf0f1',
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+  },
+  avatar: {
+    marginBottom: 20,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#34495E',
+    borderRadius: 30,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+    width: '100%',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    color: 'white',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginVertical: 20,
+  },
+  loginButton: {
+    backgroundColor: '#E17055',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  registerButton: {
+    backgroundColor: '#E17055',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  forgotPasswordText: {
+    color: '#3498db',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  orText: {
+    color: '#636e72',
+    fontSize: 18,
+    marginVertical: 20,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#db4437',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    width: '100%',
+    justifyContent: 'center',
+  },
+  googleButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
 });
