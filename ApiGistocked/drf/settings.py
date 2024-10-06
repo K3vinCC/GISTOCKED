@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-^8@_oq2e3&g-^1-&sr6__yfs(z9&o3i70b&y$sa#&s&myxox1g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ["192.168.1.10:8081" ] correr api -> python manage.py runserver 192.168.1.10:8000
+# ALLOWED_HOSTS = ["192.168.1.10:8081" ] correr api -> python manage.py runserver 192.168.1.10:8000  o  python manage.py runserver <IpExpo>:8000
 ALLOWED_HOSTS = ['192.168.1.10']
 
 # Application definition

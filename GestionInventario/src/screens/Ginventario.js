@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar, Modal, Image } from 'react-native';
 
-
 export default function App() {
+  const [productos, setProductos] = useState([]); // Estado para almacenar los productos
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const data = [
-    { id: '1', imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCnbI9di1nZ24e3kyApy8k2EXOU42MhnjOjA&s',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '2', imagen: 'https://i.pinimg.com/236x/1c/5a/0f/1c5a0f6f80497e34febe28e6d3577666.jpg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '3', imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStea81Of9aZlsrXenWOUDBtW1icv8GuAG9eQ&s',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '4', imagen: 'https://pbs.twimg.com/profile_images/3166355302/23b4a435aa8fe2fd3a9d7c22f42e3af6_400x400.jpeg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '5', imagen: 'https://i.pinimg.com/236x/64/dd/2f/64dd2f429909c15c851a21d7ac09c702.jpg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '6', imagen: 'https://www.recreoviral.com/wp-content/uploads/2015/06/Animales-posando-para-la-foto-15.jpg' ,codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-  ];
+
+  // Llamada a la API cuando el componente se monta
+  useEffect(() => {
+    axios.get('http://192.168.1.10:8000/api/v1/productos/')
+      .then(response => {
+        setProductos(response.data); // Asignar los datos recibidos al estado
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
 
   const renderItem = ({ item }) => (
     <View style={styles.productContainer}>
@@ -20,9 +24,9 @@ export default function App() {
       <View style={styles.productDetails}>
         <Text style={{ color: 'white' }}>id: {item.id}</Text>
         <Text style={{ color: 'white' }}>codigo: {item.codigo}</Text>
-        <Text style={{ color: 'white' }}>nombre: {item.nombre}</Text>
+        <Text style={{ color: 'white' }}>nombre: {item.nombre_producto}</Text>
         <Text style={{ color: 'white' }}>marca: {item.marca}</Text>
-        <Text style={{ color: 'white' }}>precio venta: $ {item.precioventaf}</Text>
+        <Text style={{ color: 'white' }}>precio venta: $ {item.precio_venta}</Text>
         <Text style={{ color: 'white' }}>stock: {item.stock} unidades</Text>
       </View>
       <View style={styles.buttonContainer}>
@@ -56,10 +60,11 @@ export default function App() {
           <Button title="filtrar" onPress={() => {}} />
         </View>
 
+        {/* Renderizar la lista de productos obtenida desde la API */}
         <FlatList
-          data={data}
+          data={productos}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.id.toString()} // clave única para cada item
         />
 
         {selectedProduct && (
@@ -80,7 +85,7 @@ export default function App() {
                 <Text style={styles.modalText}>codigo:</Text>
                 <TextInput style={styles.modalInput} value={selectedProduct.codigo} editable={false} />
                 <Text style={styles.modalText}>nombre:</Text>
-                <TextInput style={styles.modalInput} value={selectedProduct.nombre} editable={false} />
+                <TextInput style={styles.modalInput} value={selectedProduct.nombre_producto} editable={false} />
                 <Text style={styles.modalText}>marca:</Text>
                 <TextInput style={styles.modalInput} value={selectedProduct.marca} editable={false} />
                 <Text style={styles.modalText}>categoria:</Text>
@@ -90,15 +95,15 @@ export default function App() {
                 <Text style={styles.modalText}>stock (unidades):</Text>
                 <TextInput style={styles.modalInput} value={`${selectedProduct.stock}`} editable={false} />
                 <Text style={styles.modalText}>precio compra:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.preciocompra}`} editable={false} />
+                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precio_compra}`} editable={false} />
                 <Text style={styles.modalText}>porcentaje ganancia:</Text>
-                <TextInput style={styles.modalInput} value={`${selectedProduct.porcentajeganancia} %`} editable={false} />
+                <TextInput style={styles.modalInput} value={`${selectedProduct.porcentaje_ganancia} %`} editable={false} />
                 <Text style={styles.modalText}>precio neto:</Text>
                 <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioneto}`} editable={false} />
                 <Text style={styles.modalText}>precio venta:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioventa}`} editable={false} />
+                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precio_venta}`} editable={false} />
                 <Text style={styles.modalText}>precio venta final:</Text>
-                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precioventaf}`} editable={false} />
+                <TextInput style={styles.modalInput} value={`$ ${selectedProduct.precio_venta}`} editable={false} />
               </View>
             </View>
           </Modal>
@@ -109,6 +114,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  // Mantén los mismos estilos
   safeArea: {
     flex: 1,
     backgroundColor: '#5A6D7C',
@@ -146,12 +152,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-  imagePlaceholder: {
-    width: 50,
-    height: 50,
-    backgroundColor: '#fff',
-    marginRight: 10,
-  },
   productDetails: {
     flex: 1,
     backgroundColor: '#4B5A6C',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
   },
- modalContainer: {
+  modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

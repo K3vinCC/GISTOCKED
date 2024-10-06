@@ -90,7 +90,10 @@ class RolUser(models.Model):
 
 class Usuario(AbstractBaseUser):
     """
-    puede herar de modelo el ususario -> Usuario(models.Model)
+    puede herar de modelo el usuario -> Usuario(models.Model)
+    
+    AbstractBaseUser -> Password(contraseña) y Last login(Ultimo inicio de sesión)
+
     Modelo personalizado para representar un usuario.
     """
     nombre = models.CharField(max_length=100)  # Nombre del usuario

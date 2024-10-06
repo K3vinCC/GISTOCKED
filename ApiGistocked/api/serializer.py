@@ -7,7 +7,7 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductoSerializer(serializers.ModelSerializer):
-    categoria = CategoriaSerializer()  # Incluimos la categoría dentro del producto
+    # categoria = CategoriaSerializer()  # Incluimos la categoría dentro del producto
 
     class Meta:
         model = Producto
