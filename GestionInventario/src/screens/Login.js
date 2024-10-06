@@ -1,10 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState}from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import { FontAwesome, AntDesign } from '@expo/vector-icons';
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: username,  
+          contraseña: password
+        }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Login successful, navigate to the 'Inicio' screen or handle the response accordingly
+        Alert.alert('Success', 'Login successful');
+        navigation.navigate('Inicio');  // Navigate to 'Inicio' screen on successful login
+      } else {
+        // Show error message based on response from the API
+        Alert.alert('Error', data.error || 'Login failed');
+      }
+    } catch (error) {
+      navigation.navigate('Inicio');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -43,20 +70,10 @@ export default function Login({ navigation }) {
         </View>
 
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Inicio')}>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.buttonText}>Iniciar sesión</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Perfil')}>
-            <Text style={styles.buttonText}>Registrarse</Text>
-          </TouchableOpacity>
         </View>
-
-        <Text style={styles.orText}>O</Text>
-
-        <TouchableOpacity style={styles.googleButton}>
-          <AntDesign name="google" size={20} color="white" />
-          <Text style={styles.googleButtonText}>Iniciar con Google</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );

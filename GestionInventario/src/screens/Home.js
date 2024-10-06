@@ -1,242 +1,247 @@
-import React from "react";
-import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, } from "react-native";
-import { TouchableOpacity } from 'react-native';
+import React, { useContext } from "react";
+import { useEffect } from 'react';
+import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../../ThemeContext';
+import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
+import { useFonts } from 'expo-font';
+
+const { width } = Dimensions.get('window');
+SplashScreen.preventAutoHideAsync();
 export default (props) => {
-    const navigation = useNavigation();
-	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView  style={styles.scrollView}>
-				<View style={styles.row2}>
-					<View style={styles.column}>
-					    <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
-                            <Image
-                                source={require('../../assets/INICIO/ajustes.png')}
-                                resizeMode = {"stretch"}
-                                style={styles.image3}
-                            />
-                            <Text style={styles.text2}>
-                                {"Inventario"}
-                            </Text>
-                            <Text style={styles.text3}>
-                                {"Edita o inspecciona tu inventario"}
-                            </Text>
+  const userRole = 'admin'; 
+  const { isDarkMode } = useContext(ThemeContext);
+  const navigation = useNavigation();
+
+  // useFonts se debe llamar de manera incondicional
+  const [fontsLoaded] = useFonts({
+    'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Bold': require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
+
+  // Mover la lógica de hideAsync al mismo nivel del hook useEffect
+  useEffect(() => {
+    async function prepare() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    }
+    prepare();
+  }, [fontsLoaded]);
+
+
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
+      }, 
+      headerTintColor: isDarkMode ? '#0B1016' : '#34495E',
+    });
+  }, [isDarkMode, navigation]);
+
+  const currentStyles = isDarkMode ? styles2 : styles;
+
+
+  return (
+    <SafeAreaView style={currentStyles.container}>
+      <ScrollView contentContainerStyle={currentStyles.scrollView}>
+        <View style={currentStyles.row2}>
+          <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+            <View style={currentStyles.column}>
+              <Image
+                source={require('../../assets/INICIO/inventario.png')}
+                resizeMode="contain"
+                style={currentStyles.image}
+              />
+              <Text style={currentStyles.text2}>
+                {"Inventario"}
+              </Text>
+              <Text style={currentStyles.text3}>
+                {"Edita o inspecciona tu inventario"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Ventas')}>
+          <View style={currentStyles.column}>
+            <Image
+              source={require('../../assets/INICIO/venta.png')}
+              resizeMode="contain"
+              style={currentStyles.image}
+            />
+            <Text style={currentStyles.text2}>
+              {"Ventas"}
+            </Text>
+            <Text style={currentStyles.text3}>
+              {"Genera una nueva venta de productos"}
+            </Text>
+          </View>
+          </TouchableOpacity>
+        </View>
+			<View style={currentStyles.row2}>
+      <TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+          	<View style={currentStyles.column}>
+		  	
+			<Image
+              source={require('../../assets/INICIO/analisis.png')}
+              resizeMode="contain"
+              style={currentStyles.image}
+            />
+            <Text style={currentStyles.text2}>
+              {"Análisis de ventas"}
+            </Text>
+            <Text style={currentStyles.text3}>
+              {"Inspecciona los gráficos de ventas de productos"}
+            </Text>
+			
+          </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
+            <View style={currentStyles.column}>
+              <Image
+                source={require('../../assets/INICIO/ajustes.png')}
+                resizeMode="contain"
+                style={currentStyles.image}
+              />
+              <Text style={currentStyles.text2}>
+                {"Ajustes"}
+              </Text>
+              <Text style={currentStyles.text3}>
+                {"Configura tus preferencias de la app o tu usuario"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={currentStyles.row2}>
+          {userRole === 'admin' && (
+                      <TouchableOpacity onPress={() => navigation.navigate('AgregarUsuarios')}>
+                        <View style={currentStyles.column}>
+                            
+                                <Image
+                                    source={require('../../assets/INICIO/user.png')}
+                                    resizeMode="contain"
+                                    style={currentStyles.image}
+                                />
+                                <Text style={currentStyles.text2}>{"Usuarios"}</Text>
+                                <Text style={currentStyles.text3}>{"Añade, edita o elimina usuarios"}</Text>
+                            
+                        </View>
                         </TouchableOpacity>
-					</View>
-					<View style={styles.column}>
-						<Image
-							source={require('../../assets/INICIO/venta.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text4}>
-							{"Ventas"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Genera una nueva venta de productos"}
-						</Text>
-					</View>
-				</View>
-				<View style={styles.row2}>
-					<View style={styles.column}>
-						<TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
-						<Image
-							source={require('../../assets/INICIO/analisis.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text6}>
-							{"Análisis de ventas"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Inspecciona los gráficos de ventas de productos"}
-						</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.column}>
-						<Image
-							source={require('../../assets/INICIO/user.png')}
-							resizeMode = {"stretch"}
-							style={styles.image3}
-						/>
-						<Text style={styles.text8}>
-							{"Usuarios"}
-						</Text>
-						<Text style={styles.text3}>
-							{"Añade, edita o elimina usuarios"}
-						</Text>
-					</View>
-				</View>
-				<View style={styles.column3}>
-				<TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
-					<Image
-						source={require('../../assets/INICIO/ajustes.png')}
-						resizeMode = {"stretch"}
-						style={styles.image3}
-					/>
-					<Text style={styles.text10}>
-						{"Ajustes"}
-					</Text>
-					<Text style={styles.text3}>
-						{"Configura tus preferencias de la app o tu usuario"}
-					</Text>
-				</TouchableOpacity>
-				</View>
-				<View style={styles.row3}>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image5}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image6}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image7}
-					/>
-					<Image
-						source = {{uri: "https://i.imgur.com/1tMFzp8.png"}}
-						resizeMode = {"stretch"}
-						style={styles.image8}
-					/>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
-	)
-}
+                    )}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#FFFFFF",
-	},
-	column: {
-		width: 155,
-		height: 180,
-		backgroundColor: "#D8D8D8",
-		borderRadius: 20,
-		paddingTop: 22,
-		paddingBottom: 35,
-	},
-	column2: {
-		width: 155,
-		height: 180,
-		borderColor: "#5E27FD",
-		borderWidth: 1,
-		paddingVertical: 22,
-	},
-	column3: {
-		width: 155,
-		height: 180,
-		backgroundColor: "#D8D8D8",
-		borderRadius: 20,
-		paddingVertical: 22,
-		marginBottom: 34,
-		marginHorizontal: 25,
-	},
-	image: {
-		width: 18,
-		height: 16,
-	},
-	image2: {
-		width: 20,
-		height: 21,
-	},
-	image3: {
-		height: 41,
-		width: 41,
-		marginBottom: 14,
-		marginHorizontal: 57,
-	},
-	image4: {
-		height: 41,
-		width: 41,
-		marginBottom: 13,
-		marginHorizontal: 57,
-	},
-	image5: {
-		width: 20,
-		height: 18,
-	},
-	image6: {
-		width: 20,
-		height: 16,
-	},
-	image7: {
-		width: 18,
-		height: 18,
-	},
-	image8: {
-		width: 20,
-		height: 20,
-	},
-	row: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 48,
-		marginHorizontal: 30,
-	},
-	row2: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: 25,
-		marginHorizontal: 23,
-	},
-	row3: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginHorizontal: 56,
-	},
-	scrollView: {
-		flex: 1,
-		backgroundColor: "#EDF1F1",
-		paddingVertical: 42,
-	},
-	text: {
-		color: "#1E1E1E",
-		fontSize: 20,
-	},
-	text2: {
-		color: "#000000",
-		fontSize: 20,
-		marginBottom: 20,
-		marginLeft: 33,
-	},
-	text3: {
-		color: "#34495E",
-		fontSize: 14,
-		marginHorizontal: 17,
-		marginBottom: 15,
-		width: 134,
-	},
-	text4: {
-		color: "#000000",
-		fontSize: 20,
-		marginBottom: 20,
-		marginLeft: 47,
-	},
-	text6: {
-		color: "#000000",
-		fontSize: 20,
-		marginBottom: 1,
-		marginHorizontal: 29,
-	},
-	text8: {
-		color: "#000000",
-		fontSize: 20,
-		marginBottom: 20,
-		marginLeft: 38,
-	},
-	text10: {
-		color: "#000000",
-		fontSize: 20,
-		marginBottom: 20,
-		marginLeft: 44,
-	},
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  row2: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
+  },
+  column: {
+    width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
+    height: width * 0.55, // Incrementa la altura para más espacio vertical
+    backgroundColor: "#D8D8D8",
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: "flex-start", // Alinea todo el contenido al inicio
+    alignItems: "center",
+  },
+  image: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+	marginTop: -10,
+	marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  image2: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+ marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  text2: {
+    fontFamily: "Roboto-Bold",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text4: {
+    fontFamily: "Roboto-Medium",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text3: {
+    fontFamily: "Roboto-Medium",
+    color: "#34495E",
+    fontSize: 14,
+    textAlign: "center",
+ // Espacio debajo del texto principal
+  },
+  scrollView: {
+    paddingVertical: 20,
+  },
+});
+
+const styles2 = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0B1016",
+  },
+  row2: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
+  },
+  column: {
+    width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
+    height: width * 0.55, // Incrementa la altura para más espacio vertical
+    backgroundColor: "#16202C",
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: "flex-start", // Alinea todo el contenido al inicio
+    alignItems: "center",
+    borderColor: '#009679',
+    borderWidth: 1,            // Thickness of the outer line (border)
+    borderRadius: 10,          // Optional: Adds rounded corners
+  },
+  image: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+	marginTop: -10,
+	marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  image2: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+ marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  text2: {
+    fontFamily: "Roboto-Bold",
+    color: "#506D8A",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text4: {
+    fontFamily: "Roboto-Medium",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text3: {
+    fontFamily: "Roboto-Medium",
+    color: "#34495E",
+    fontSize: 14,
+    textAlign: "center",
+ // Espacio debajo del texto principal
+  },
+  scrollView: {
+    paddingVertical: 20,
+  },
 });
