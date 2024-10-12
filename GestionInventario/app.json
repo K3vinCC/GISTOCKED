@@ -1,19 +1,11 @@
 {
   "expo": {
-    "name": "GestionInventario",
-    "slug": "GestionInventario",
+    "name": "latest13septGIS",
+    "slug": "latest13septGIS",
     "version": "1.0.0",
-    "packagerOpts": {
-      "hostType": "lan"
-    },
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true
     },
@@ -22,16 +14,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
-
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [ 
-      [ 
-        "expo-build-properties", 
-        { "android": { "usesCleartextTraffic": true } }
-         ] 
-        ]
+    "plugins": [
+      "expo-font"
+    ]
   }
 }

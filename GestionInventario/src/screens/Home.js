@@ -1,146 +1,247 @@
-import React from "react";
-import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useContext } from "react";
+import { useEffect } from 'react';
+import { SafeAreaView, View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../../ThemeContext';
+import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
+import { useFonts } from 'expo-font';
 
+const { width } = Dimensions.get('window');
+SplashScreen.preventAutoHideAsync();
 export default (props) => {
-    const navigation = useNavigation();
+  const userRole = 'admin'; 
+  const { isDarkMode } = useContext(ThemeContext);
+  const navigation = useNavigation();
 
-	const userRole = 'admin'; 
-	// const userRole = 'user'; 
-	
-    return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView style={styles.scrollView}>
-                <View style={styles.row}>
-                    <View style={styles.column}>
-                        <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
-                            <Image
-                                source={require('../../assets/INICIO/ajustes.png')}
-                                resizeMode={"stretch"}
-                                style={styles.image}
-                            />
-                            <Text style={styles.text}>{"Inventario"}</Text>
-                            <Text style={styles.subText}>{"Edita o inspecciona tu inventario"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.column}>
-                        <TouchableOpacity onPress={() => navigation.navigate('ZonaVenta')}>
-                            <Image
-                                source={require('../../assets/INICIO/venta.png')}
-                                resizeMode={"stretch"}
-                                style={styles.image}
-                            />
-                            <Text style={styles.text}>{"Ventas"}</Text>
-                            <Text style={styles.subText}>{"Genera una nueva venta de productos"}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+  // useFonts se debe llamar de manera incondicional
+  const [fontsLoaded] = useFonts({
+    'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
+    'Roboto-Bold': require('../../assets/fonts/Roboto-Bold.ttf'),
+  });
 
-                <View style={styles.row}>
-                    <View style={styles.column}>
-                        <Image
-                            source={require('../../assets/INICIO/analisis.png')}
-                            resizeMode={"stretch"}
-                            style={styles.image}
-                        />
-                        <Text style={styles.text}>{"Análisis de ventas"}</Text>
-                        <Text style={styles.subText}>{"Inspecciona los gráficos de ventas de productos"}</Text>
-                    </View>
+  // Mover la lógica de hideAsync al mismo nivel del hook useEffect
+  useEffect(() => {
+    async function prepare() {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    }
+    prepare();
+  }, [fontsLoaded]);
 
-                    {/* Solo mostrar esta sección si el usuario es administrador */}
-                    {userRole === 'admin' && (
-                        <View style={styles.column}>
-                            <TouchableOpacity onPress={() => navigation.navigate('AgregarUsuarios')}>
+
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
+      }, 
+      headerTintColor: isDarkMode ? '#0B1016' : '#34495E',
+    });
+  }, [isDarkMode, navigation]);
+
+  const currentStyles = isDarkMode ? styles2 : styles;
+
+
+  return (
+    <SafeAreaView style={currentStyles.container}>
+      <ScrollView contentContainerStyle={currentStyles.scrollView}>
+        <View style={currentStyles.row2}>
+          <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+            <View style={currentStyles.column}>
+              <Image
+                source={require('../../assets/INICIO/inventario.png')}
+                resizeMode="contain"
+                style={currentStyles.image}
+              />
+              <Text style={currentStyles.text2}>
+                {"Inventario"}
+              </Text>
+              <Text style={currentStyles.text3}>
+                {"Edita o inspecciona tu inventario"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Ventas')}>
+          <View style={currentStyles.column}>
+            <Image
+              source={require('../../assets/INICIO/venta.png')}
+              resizeMode="contain"
+              style={currentStyles.image}
+            />
+            <Text style={currentStyles.text2}>
+              {"Ventas"}
+            </Text>
+            <Text style={currentStyles.text3}>
+              {"Genera una nueva venta de productos"}
+            </Text>
+          </View>
+          </TouchableOpacity>
+        </View>
+			<View style={currentStyles.row2}>
+      <TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+          	<View style={currentStyles.column}>
+		  	
+			<Image
+              source={require('../../assets/INICIO/analisis.png')}
+              resizeMode="contain"
+              style={currentStyles.image}
+            />
+            <Text style={currentStyles.text2}>
+              {"Análisis de ventas"}
+            </Text>
+            <Text style={currentStyles.text3}>
+              {"Inspecciona los gráficos de ventas de productos"}
+            </Text>
+			
+          </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
+            <View style={currentStyles.column}>
+              <Image
+                source={require('../../assets/INICIO/ajustes.png')}
+                resizeMode="contain"
+                style={currentStyles.image}
+              />
+              <Text style={currentStyles.text2}>
+                {"Ajustes"}
+              </Text>
+              <Text style={currentStyles.text3}>
+                {"Configura tus preferencias de la app o tu usuario"}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={currentStyles.row2}>
+          {userRole === 'admin' && (
+                      <TouchableOpacity onPress={() => navigation.navigate('AgregarUsuarios')}>
+                        <View style={currentStyles.column}>
+                            
                                 <Image
                                     source={require('../../assets/INICIO/user.png')}
-                                    resizeMode={"stretch"}
-                                    style={styles.image}
+                                    resizeMode="contain"
+                                    style={currentStyles.image}
                                 />
-                                <Text style={styles.text}>{"Usuarios"}</Text>
-                                <Text style={styles.subText}>{"Añade, edita o elimina usuarios"}</Text>
-                            </TouchableOpacity>
+                                <Text style={currentStyles.text2}>{"Usuarios"}</Text>
+                                <Text style={currentStyles.text3}>{"Añade, edita o elimina usuarios"}</Text>
+                            
                         </View>
+                        </TouchableOpacity>
                     )}
-                </View>
-
-                <View style={styles.singleColumn}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Opciones')}>
-                        <Image
-                            source={require('../../assets/INICIO/ajustes.png')}
-                            resizeMode={"stretch"}
-                            style={styles.image}
-                        />
-                        <Text style={styles.text}>{"Ajustes"}</Text>
-                        <Text style={styles.subText}>{"Configura tus preferencias de la app o tu usuario"}</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.singleColumn}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ListaUsuarios')}>
-                        <Image
-                            source={require('../../assets/INICIO/user.png')}
-                            resizeMode={"stretch"}
-                            style={styles.image}
-                        />
-                        <Text style={styles.text}>{"Lista de Usuarios"}</Text>
-                        <Text style={styles.subText}>{"Visualiza y administra la lista de usuarios"}</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
-}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFFFFF",
-    },
-    scrollView: {
-        flex: 1,
-        backgroundColor: "#EDF1F1",
-        paddingVertical: 20,
-    },
-    row: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginBottom: 20,
-        paddingHorizontal: 20,
-    },
-    column: {
-        width: 155,
-        height: 180,
-        backgroundColor: "#D8D8D8",
-        borderRadius: 20,
-        padding: 20,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    singleColumn: {
-        width: 155,
-        height: 180,
-        backgroundColor: "#D8D8D8",
-        borderRadius: 20,
-        padding: 20,
-        justifyContent: "center",
-        alignItems: "center",
-        marginVertical: 10,
-        alignSelf: "center",
-    },
-    image: {
-        height: 41,
-        width: 41,
-        marginBottom: 14,
-    },
-    text: {
-        color: "#000000",
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    subText: {
-        color: "#34495E",
-        fontSize: 14,
-        textAlign: "center",
-    },
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  row2: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
+  },
+  column: {
+    width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
+    height: width * 0.55, // Incrementa la altura para más espacio vertical
+    backgroundColor: "#D8D8D8",
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: "flex-start", // Alinea todo el contenido al inicio
+    alignItems: "center",
+  },
+  image: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+	marginTop: -10,
+	marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  image2: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+ marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  text2: {
+    fontFamily: "Roboto-Bold",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text4: {
+    fontFamily: "Roboto-Medium",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text3: {
+    fontFamily: "Roboto-Medium",
+    color: "#34495E",
+    fontSize: 14,
+    textAlign: "center",
+ // Espacio debajo del texto principal
+  },
+  scrollView: {
+    paddingVertical: 20,
+  },
+});
+
+const styles2 = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0B1016",
+  },
+  row2: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginVertical: 10,
+  },
+  column: {
+    width: width * 0.4, // Ajusta al 40% del ancho de la pantalla
+    height: width * 0.55, // Incrementa la altura para más espacio vertical
+    backgroundColor: "#16202C",
+    borderRadius: 20,
+    padding: 10,
+    justifyContent: "flex-start", // Alinea todo el contenido al inicio
+    alignItems: "center",
+    borderColor: '#009679',
+    borderWidth: 1,            // Thickness of the outer line (border)
+    borderRadius: 10,          // Optional: Adds rounded corners
+  },
+  image: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+	marginTop: -10,
+	marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  image2: {
+    width: "50%", // Ajusta la imagen al 50% del ancho del contenedor
+    height: "50%", // Ajusta la altura proporcionalmente
+ marginBottom: -10,// Margen superior para alinear las imágenes
+  },
+  text2: {
+    fontFamily: "Roboto-Bold",
+    color: "#506D8A",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text4: {
+    fontFamily: "Roboto-Medium",
+    color: "#000000",
+    fontSize: 18,
+    textAlign: "center", // Asegura que el texto principal esté alineado en todos
+  },
+  text3: {
+    fontFamily: "Roboto-Medium",
+    color: "#34495E",
+    fontSize: 14,
+    textAlign: "center",
+ // Espacio debajo del texto principal
+  },
+  scrollView: {
+    paddingVertical: 20,
+  },
 });

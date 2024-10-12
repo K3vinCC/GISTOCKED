@@ -1,10 +1,35 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome, AntDesign } from '@expo/vector-icons';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function Login({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: username,
+          contraseña: password
+        }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Login successful');
+        navigation.navigate('Inicio');
+      } else {
+        Alert.alert('Error', data.error || 'Login failed');
+      }
+    } catch (error) {
+      navigation.navigate('Inicio');
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -43,23 +68,14 @@ export default function Login({ navigation }) {
         </View>
 
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Inicio')}>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
             <Text style={styles.buttonText}>Iniciar sesión</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.registerButton} onPress={() => navigation.navigate('Perfil')}>
-            <Text style={styles.buttonText}>Registrarse</Text>
           </TouchableOpacity>
         </View>
 
+        {/* Se movió el texto de "¿Olvidaste tu contraseña?" fuera de buttonRow */}
         <TouchableOpacity onPress={() => navigation.navigate('RecuperarContraseña')}>
           <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.orText}>O</Text>
-
-        <TouchableOpacity style={styles.googleButton}>
-          <AntDesign name="google" size={20} color="white" />
-          <Text style={styles.googleButtonText}>Iniciar con Google</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -75,7 +91,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 48,
-    fontWeight: 'Racing Sans One',
+    fontWeight: 'bold',
     marginBottom: 40,
   },
   titleOrange: {
@@ -115,18 +131,11 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
     marginVertical: 20,
   },
   loginButton: {
-    backgroundColor: '#E17055',
-    borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-  },
-  registerButton: {
     backgroundColor: '#E17055',
     borderRadius: 30,
     paddingVertical: 10,
@@ -140,26 +149,6 @@ const styles = StyleSheet.create({
   forgotPasswordText: {
     color: '#3498db',
     fontSize: 16,
-    marginBottom: 20,
-  },
-  orText: {
-    color: '#636e72',
-    fontSize: 18,
-    marginVertical: 20,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#db4437',
-    borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  googleButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    marginLeft: 10,
+    marginTop: 20,  
   },
 });

@@ -1,173 +1,426 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar, Modal, Image, Alert } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Button,
+  SafeAreaView,
+  StatusBar,
+  Modal,
+  Alert
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ThemeContext } from '../../ThemeContext';
+import styles from './styles/GinventarioStyles'; // Cambia la importación aquí
 
 export default function App() {
-  const [productos, setProductos] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [addProductModalVisible, setAddProductModalVisible] = useState(false);
+  const [detailModalVisible, setDetailModalVisible] = useState(false); // Nuevo estado para el modal de detalles
+  const [newProduct, setNewProduct] = useState({
+    id: '',
+    nombre_producto: '',
+    descripcion: '',
+    precio_compra: '',
+    porcentaje_ganancia: '',
+    precio_venta: '',
+    precio_final: '',
+    stock: '',
+    categoria: ''
+  });
+  const [data, setData] = useState([]);
 
-  // Llamada a la API para obtener productos
+  const { isDarkMode } = useContext(ThemeContext);
+  const navigation = useNavigation();
+
   useEffect(() => {
-    axios.get('http://192.168.1.10:8000/api/v1/productos/')
-      .then(response => {
-        setProductos(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
-      });
-  }, []);
+    // Estilos del encabezado
+    navigation.setOptions({
+      headerStyle: {
+        backgroundColor: isDarkMode ? '#0B1016' : '#5A6D7C',
+      },
+      headerTintColor: '#FFF',
+    });
 
-  // Actualizar producto mediante API
-  const handleUpdateProduct = () => {
-    axios.put(`http://192.168.1.10:8000/api/v1/productos/${selectedProduct.id}/`, selectedProduct)
-      .then(response => {
-        const updatedProductos = productos.map(producto =>
-          producto.id === selectedProduct.id ? response.data : producto
-        );
-        setProductos(updatedProductos);
-        setModalVisible(false);
-      })
-      .catch(error => {
-        console.error('Error updating product:', error);
-      });
+    // Cargar productos de la API
+    fetchProducts();
+  }, [isDarkMode, navigation]);
+
+  const currentStyles = isDarkMode ? styles : styles; // Reemplazar según tus estilos
+
+  // Función para obtener productos desde la API
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://192.168.1.10:8000/api/v1/productos/');
+      const products = await response.json();
+      setData(products);
+    } catch (error) {
+      console.error('Error al cargar productos:', error);
+    }
   };
 
-  // Eliminar producto mediante API
-  const handleDeleteProduct = (id) => {
-    Alert.alert(
-      "Eliminar Producto",
-      "¿Estás seguro de que deseas eliminar este producto?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          onPress: () => {
-            axios.delete(`http://192.168.1.10:8000/api/v1/productos/${id}/`)
-              .then(() => {
-                // Eliminar el producto del estado local
-                const filteredProductos = productos.filter(producto => producto.id !== id);
-                setProductos(filteredProductos);
-              })
-              .catch(error => {
-                console.error('Error deleting product:', error);
-              });
+  // Función para editar un producto
+  const editProduct = async (product) => {
+    try {
+      const response = await fetch(`http://192.168.1.10:8000/api/v1/productos/${product.id}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(product),
+      });
+      const updatedProduct = await response.json();
+
+      // Actualiza la lista local de productos
+      const updatedData = data.map((item) =>
+        item.id === updatedProduct.id ? updatedProduct : item
+      );
+      setData(updatedData);
+      setModalVisible(false);
+      Alert.alert('Producto actualizado correctamente');
+    } catch (error) {
+      console.error('Error al actualizar producto:', error);
+    }
+  };
+
+  // Función para agregar un nuevo producto
+  const addProduct = async () => {
+    try {
+      // newProduct.id &&
+      if ( newProduct.nombre_producto && newProduct.descripcion && newProduct.precio_compra) {
+        const response = await fetch('http://192.168.1.10:8000/api/v1/productos/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          style: "destructive",
-        }
-      ]
-    );
+          body: JSON.stringify(newProduct),
+        });
+        const addedProduct = await response.json();
+        setData([...data, addedProduct]);
+        setAddProductModalVisible(false);
+        setNewProduct({
+          id: '',
+          nombre_producto: '',
+          descripcion: '',
+          precio_compra: '',
+          porcentaje_ganancia: '',
+          precio_venta: '',
+          precio_final: '',
+          stock: '',
+          categoria: ''
+        });
+        Alert.alert('Producto agregado correctamente');
+      } else {
+        Alert.alert("Por favor, completa todos los campos obligatorios.");
+      }
+    } catch (error) {
+      console.error('Error al agregar producto:', error);
+    }
   };
 
-  const handleInputChange = (name, value) => {
-    setSelectedProduct({ ...selectedProduct, [name]: value });
+  // Función para eliminar un producto
+  const deleteProduct = async (productId) => {
+    try {
+      await fetch(`http://192.168.1.10:8000/api/v1/productos/${productId}/`, {
+        method: 'DELETE',
+      });
+      setData(data.filter((item) => item.id !== productId));
+      Alert.alert('Producto eliminado correctamente');
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+    }
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.productContainer}>
-      <Image style={styles.productImage} source={{ uri: item.imagen }} />
-      <View style={styles.productDetails}>
-        <Text style={{ color: 'white' }}>id: {item.id}</Text>
-        <Text style={{ color: 'white' }}>codigo: {item.codigo}</Text>
-        <Text style={{ color: 'white' }}>nombre: {item.nombre_producto}</Text>
-        <Text style={{ color: 'white' }}>marca: {item.marca}</Text>
-        <Text style={{ color: 'white' }}>precio venta: $ {item.precio_venta}</Text>
-        <Text style={{ color: 'white' }}>stock: {item.stock} unidades</Text>
+    <View style={currentStyles.productContainer}>
+      <View style={currentStyles.productDetails}>
+        <Text style={{ color: 'white' }}>ID: {item.id}</Text>
+        <Text style={{ color: 'white' }}>Nombre: {item.nombre_producto}</Text>
+        <Text style={{ color: 'white' }}>Descripción: {item.descripcion}</Text>
+        <Text style={{ color: 'white' }}>Precio Venta: $ {item.precio_final}</Text>
+        <Text style={{ color: 'white' }}>Stock: {item.stock} unidades</Text>
+        <Text style={{ color: 'white' }}>Categoría: {item.categoria}</Text>
       </View>
-      <View style={styles.buttonContainer}>
+      <View style={currentStyles.buttonContainer}>
         <TouchableOpacity
-          style={styles.button}
+          style={currentStyles.button}
           onPress={() => {
             setSelectedProduct(item);
             setModalVisible(true);
           }}
         >
-          <Text style={styles.buttonText}>Editar</Text>
+          <Text style={currentStyles.buttonText}>Editar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => handleDeleteProduct(item.id)}
+          style={[currentStyles.button, currentStyles.deleteButton]}
+          onPress={() => deleteProduct(item.id)}
         >
-          <Text style={styles.buttonText}>Eliminar</Text>
+          <Text style={currentStyles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.button}
+          style={currentStyles.button}
           onPress={() => {
             setSelectedProduct(item);
-            setModalVisible(true);
+            setDetailModalVisible(true); // Aquí es donde se usará setDetailModalVisible
           }}
         >
-          <Text style={styles.buttonText}>Detalles</Text>
+          <Text style={currentStyles.buttonText}>Detalles</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={currentStyles.safeArea}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.container}>
+      <View style={currentStyles.container}>
+
+        {/* Barra de búsqueda */}
+        <View style={currentStyles.searchBar}>
+          <TextInput
+            style={currentStyles.searchInput}
+            placeholder="Buscar por nombre..."
+            placeholderTextColor={isDarkMode ? "#506D8A" : "#FFF"}
+          />
+          <Button title="Buscar" color="#E17055" onPress={() => {}} />
+          <Button title="Filtrar" color="#E17055" onPress={() => {}} />
+        </View>
 
         {/* Lista de productos */}
         <FlatList
-          data={productos}
+          data={data}
           renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()} // Asegúrate de convertir id a string
         />
 
+        {/* Botón flotante para agregar producto */}
+        <TouchableOpacity
+          style={currentStyles.floatingButton}
+          onPress={() => setAddProductModalVisible(true)}
+        >
+          <Text style={currentStyles.floatingButtonText}>+</Text>
+        </TouchableOpacity>
+
+        {/* Modal para editar el producto seleccionado */}
         {selectedProduct && (
           <Modal
             animationType="slide"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
+            onRequestClose={() => setModalVisible(!modalVisible)}
           >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+            <View style={currentStyles.modalContainer}>
+              <View style={currentStyles.modalContent}>
+                <TouchableOpacity onPress={() => setModalVisible(false)} style={currentStyles.closeButton}>
                   <Text style={{ fontSize: 18 }}>×</Text>
                 </TouchableOpacity>
-
-                <Image style={styles.productImage} source={{ uri: selectedProduct.imagen }} />
-
-                <Text style={styles.modalText}>codigo:</Text>
+                <Text style={currentStyles.modalText}>ID:</Text>
                 <TextInput
-                  style={styles.modalInput}
-                  value={selectedProduct.codigo}
-                  onChangeText={(value) => handleInputChange('codigo', value)}
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.id.toString()} // Asegúrate de convertir id a string
+                  editable={false} // Hacer el ID no editable
                 />
-
-                <Text style={styles.modalText}>nombre:</Text>
+                <Text style={currentStyles.modalText}>Nombre del Producto:</Text>
                 <TextInput
-                  style={styles.modalInput}
+                  style={currentStyles.modalInput}
                   value={selectedProduct.nombre_producto}
-                  onChangeText={(value) => handleInputChange('nombre_producto', value)}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, nombre_producto: text })
+                  }
                 />
-
-                <Text style={styles.modalText}>marca:</Text>
+                <Text style={currentStyles.modalText}>Descripción:</Text>
                 <TextInput
-                  style={styles.modalInput}
-                  value={selectedProduct.marca}
-                  onChangeText={(value) => handleInputChange('marca', value)}
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.descripcion}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, descripcion: text })
+                  }
                 />
-
-                <Text style={styles.modalText}>stock:</Text>
+                <Text style={currentStyles.modalText}>Precio de Compra:</Text>
                 <TextInput
-                  style={styles.modalInput}
-                  value={String(selectedProduct.stock)}
-                  onChangeText={(value) => handleInputChange('stock', value)}
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.precio_compra}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, precio_compra: text })
+                  }
                 />
-
-                <Text style={styles.modalText}>precio venta:</Text>
+                <Text style={currentStyles.modalText}>Porcentaje de Ganancia:</Text>
                 <TextInput
-                  style={styles.modalInput}
-                  value={String(selectedProduct.precio_venta)}
-                  onChangeText={(value) => handleInputChange('precio_venta', value)}
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.porcentaje_ganancia}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, porcentaje_ganancia: text })
+                  }
                 />
+                <Text style={currentStyles.modalText}>Precio de Venta:</Text>
+                <TextInput
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.precio_venta}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, precio_venta: text })
+                  }
+                />
+                <Text style={currentStyles.modalText}>Precio Final:</Text>
+                <TextInput
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.precio_final}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, precio_final: text })
+                  }
+                />
+                <Text style={currentStyles.modalText}>Stock:</Text>
+                <TextInput
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.stock}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, stock: text })
+                  }
+                />
+                <Text style={currentStyles.modalText}>Categoría:</Text>
+                <TextInput
+                  style={currentStyles.modalInput}
+                  value={selectedProduct.categoria}
+                  onChangeText={(text) =>
+                    setSelectedProduct({ ...selectedProduct, categoria: text })
+                  }
+                />
+                <View style={currentStyles.modalButtonContainer}>
+                  <TouchableOpacity
+                    style={currentStyles.button}
+                    onPress={() => {
+                      editProduct(selectedProduct);
+                    }}
+                  >
+                    <Text style={currentStyles.buttonText}>Guardar Cambios</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={currentStyles.button}
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={currentStyles.buttonText}>Cerrar</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        )}
 
-                {/* Botón para actualizar los datos */}
-                <TouchableOpacity style={styles.updateButton} onPress={handleUpdateProduct}>
-                  <Text style={styles.updateButtonText}>Actualizar</Text>
+        {/* Modal para agregar nuevo producto */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={addProductModalVisible}
+          onRequestClose={() => setAddProductModalVisible(!addProductModalVisible)}
+        >
+          <View style={currentStyles.modalContainer}>
+            <View style={currentStyles.modalContent}>
+              <TouchableOpacity onPress={() => setAddProductModalVisible(false)} style={currentStyles.closeButton}>
+                <Text style={{ fontSize: 18 }}>×</Text>
+              </TouchableOpacity>
+              <Text style={currentStyles.modalText}>Agregar Nuevo Producto</Text>
+              {/* <TextInput
+                style={currentStyles.modalInput}
+                placeholder="ID"
+                value={newProduct.id}
+                onChangeText={(text) => setNewProduct({ ...newProduct, id: text })}
+              /> */}
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Nombre del Producto"
+                value={newProduct.nombre_producto}
+                onChangeText={(text) => setNewProduct({ ...newProduct, nombre_producto: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Descripción"
+                value={newProduct.descripcion}
+                onChangeText={(text) => setNewProduct({ ...newProduct, descripcion: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Precio de Compra"
+                value={newProduct.precio_compra}
+                onChangeText={(text) => setNewProduct({ ...newProduct, precio_compra: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Porcentaje de Ganancia"
+                value={newProduct.porcentaje_ganancia}
+                onChangeText={(text) => setNewProduct({ ...newProduct, porcentaje_ganancia: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Precio de Venta"
+                value={newProduct.precio_venta}
+                onChangeText={(text) => setNewProduct({ ...newProduct, precio_venta: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Precio Final"
+                value={newProduct.precio_final}
+                onChangeText={(text) => setNewProduct({ ...newProduct, precio_final: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Stock"
+                value={newProduct.stock}
+                onChangeText={(text) => setNewProduct({ ...newProduct, stock: text })}
+              />
+              <TextInput
+                style={currentStyles.modalInput}
+                placeholder="Categoría"
+                value={newProduct.categoria}
+                onChangeText={(text) => setNewProduct({ ...newProduct, categoria: text })}
+              />
+              <View style={currentStyles.modalButtonContainer}>
+                <TouchableOpacity
+                  style={currentStyles.button}
+                  onPress={addProduct}
+                >
+                  <Text style={currentStyles.buttonText}>Agregar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={currentStyles.button}
+                  onPress={() => setAddProductModalVisible(false)}
+                >
+                  <Text style={currentStyles.buttonText}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Modal para detalles del producto seleccionado */}
+        {selectedProduct && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={detailModalVisible}
+            onRequestClose={() => setDetailModalVisible(false)}
+          >
+            <View style={currentStyles.modalContainer}>
+              <View style={currentStyles.modalContent}>
+                <TouchableOpacity onPress={() => setDetailModalVisible(false)} style={currentStyles.closeButton}>
+                  <Text style={{ fontSize: 18 }}>×</Text>
+                </TouchableOpacity>
+                <Text style={currentStyles.modalText}>ID: {selectedProduct.id}</Text>
+                <Text style={currentStyles.modalText}>Nombre del Producto: {selectedProduct.nombre_producto}</Text>
+                <Text style={currentStyles.modalText}>Descripción: {selectedProduct.descripcion}</Text>
+                <Text style={currentStyles.modalText}>Precio de Compra: {selectedProduct.precio_compra}</Text>
+                <Text style={currentStyles.modalText}>Porcentaje de Ganancia: {selectedProduct.porcentaje_ganancia}</Text>
+                <Text style={currentStyles.modalText}>Precio de Venta: {selectedProduct.precio_venta}</Text>
+                <Text style={currentStyles.modalText}>Precio Final: {selectedProduct.precio_final}</Text>
+                <Text style={currentStyles.modalText}>Stock: {selectedProduct.stock}</Text>
+                <Text style={currentStyles.modalText}>Categoría: {selectedProduct.categoria}</Text>
+                <TouchableOpacity
+                  style={currentStyles.button}
+                  onPress={() => setDetailModalVisible(false)}
+                >
+                  <Text style={currentStyles.buttonText}>Cerrar</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -178,83 +431,4 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#5A6D7C',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-  },
-  productContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#d3d3d3',
-    marginVertical: 5,
-    padding: 10,
-    borderRadius: 5,
-  },
-  productDetails: {
-    flex: 1,
-    backgroundColor: '#4B5A6C',
-    padding: 10,
-    borderRadius: 5,
-  },
-  buttonContainer: {
-    justifyContent: 'space-around',
-    marginLeft: 10,
-  },
-  button: {
-    backgroundColor: '#f28b82',
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#fff',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    width: '80%',
-    backgroundColor: '#4B5A6C',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-  },
-  productImage: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
-  },
-  modalText: {
-    fontSize: 14,
-    color: '#fff',
-  },
-  modalInput: {
-    width: '100%',
-    color: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    paddingVertical: 5,
-  },
-  updateButton: {
-    backgroundColor: '#28a745',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  updateButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-});
+
