@@ -20,10 +20,10 @@ class Producto(models.Model):
     """
     nombre_producto = models.CharField(max_length=100)  # Nombre del producto (máximo 100 caracteres)
     descripcion = models.TextField(null=True, blank=True)  # Descripción opcional
-    precio_compra = models.DecimalField(max_digits=12, decimal_places=2)  # Precio de compra
-    porcentaje_ganancia = models.DecimalField(max_digits=5, decimal_places=2)  # Porcentaje de ganancia
-    precio_venta = models.DecimalField(max_digits=12, decimal_places=2)  # Precio de venta
-    precio_final = models.DecimalField(max_digits=12, decimal_places=2)  # Precio final
+    precio_compra = models.IntegerField()  # Almacena centavos
+    porcentaje_ganancia = models.IntegerField()  # Almacena porcentaje * 100
+    precio_venta = models.IntegerField()  # Almacena centavos
+    precio_final = models.IntegerField() 
     categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE, null=True)  # Clave foránea a Categoría
     stock = models.PositiveIntegerField()  # Cantidad en stock (entero positivo)
 
