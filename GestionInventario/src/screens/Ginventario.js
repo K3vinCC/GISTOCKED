@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
-import styles from './styles/GinventarioStyles'; // Cambia la importación aquí
+import styles from './style/GinventarioStyles'; // Cambia la importación aquí
 
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
