@@ -88,7 +88,7 @@ class RolUser(models.Model):
     nombre_rol = models.CharField(max_length=50)  # Nombre del rol (máximo 50 caracteres)
     permisos = models.CharField(max_length=100)  # Permisos asociados al rol
 
-class Usuario(AbstractBaseUser):
+class Usuario(models.Model):
     """
     puede herar de modelo el usuario -> Usuario(models.Model)
     
