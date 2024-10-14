@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-av+=c7gkt=7@ie7uk14e#w_@)px-6cjilgeajy(00e35r-+wso
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['IPIPIPIP']
+ALLOWED_HOSTS = ['localhost','127.0.0.1', '10.0.2.2']
 
 
 # Application definition
@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gestion_comercial',
+        'NAME': 'gistocked_3',
         'USER': 'root',  # Usuario predeterminado de XAMPP
         'PASSWORD': '',  # Contraseña predeterminada de XAMPP
         'HOST': 'localhost',

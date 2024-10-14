@@ -16,7 +16,7 @@ export default function App() {
     setModalVisible(true);
   };
 
-  const { isDarkMode, toggleTheme} = useContext(ThemeContext);
+  const { isDarkMode} = useContext(ThemeContext);
   const navigation = useNavigation();
 
     useEffect(() => {

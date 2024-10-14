@@ -1,46 +1,92 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar, Modal, Image } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Button, SafeAreaView, StatusBar, Modal, Image, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
-
+import { debounce } from 'lodash'; // Importar debounce
 
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const data = [
-    { id: '1', imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCnbI9di1nZ24e3kyApy8k2EXOU42MhnjOjA&s',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '2', imagen: 'https://i.pinimg.com/236x/1c/5a/0f/1c5a0f6f80497e34febe28e6d3577666.jpg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '3', imagen: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStea81Of9aZlsrXenWOUDBtW1icv8GuAG9eQ&s',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '4', imagen: 'https://pbs.twimg.com/profile_images/3166355302/23b4a435aa8fe2fd3a9d7c22f42e3af6_400x400.jpeg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '5', imagen: 'https://i.pinimg.com/236x/64/dd/2f/64dd2f429909c15c851a21d7ac09c702.jpg',codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-    { id: '6', imagen: 'https://www.recreoviral.com/wp-content/uploads/2015/06/Animales-posando-para-la-foto-15.jpg' ,codigo: 'XXXXX', nombre: 'asdasdasd', marca: 'xxxxxx-xxxx', categoria: "bebestibles", subcategoria: "bebida", stock: 15, preciocompra: 3200, porcentajeganancia: 20, precioneto: 3840, precioventa: 4569, precioventaf: 4600 },
-  ];
-
+  const [filterModalVisible, setFilterModalVisible] = useState(false); // Estado para controlar la visibilidad del modal de filtros
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]); // Estado para guardar los productos filtrados
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(''); // Estado para la búsqueda
   const { isDarkMode } = useContext(ThemeContext);
   const navigation = useNavigation();
 
+  // Función para obtener los productos desde la API
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('http://10.0.2.2:8000/api/plist/');
+      const responseText = await response.text();
+
+      console.log('Response:', responseText);
+
+      if (response.headers.get('Content-Type').includes('application/json')) {
+        const products = JSON.parse(responseText);
+        setData(products);
+        setFilteredData(products); // Inicializar el estado filtrado con todos los productos
+      } else {
+        console.error('La respuesta no es JSON:', responseText);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Función para filtrar los productos basados en la búsqueda
+  const handleSearch = debounce((query) => {
+    if (query === '') {
+      setFilteredData(data); // Mostrar todos los productos si el input de búsqueda está vacío
+    } else {
+      const filtered = data.filter(product => {
+        const productIdMatch = product.id_producto.toString().includes(query);
+        const productNameMatch = product.nombre_producto.toLowerCase().includes(query.toLowerCase());
+        const productQuantityMatch = product.cantidad.toString().includes(query);
+
+        return productIdMatch || productNameMatch || productQuantityMatch; // Retornar si coincide con cualquiera de los campos
+      });
+      setFilteredData(filtered);
+    }
+  }, 300); // El debounce espera 300ms antes de hacer la búsqueda
+
+  // Función para manejar el input de búsqueda
+  const onSearchChange = (text) => {
+    setSearchQuery(text);
+    handleSearch(text); // Llamar a la función con debounce
+  };
 
   useEffect(() => {
     navigation.setOptions({
       headerStyle: {
         backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
-      }, headerTintColor:  '#FFF',
+      }, headerTintColor: '#FFF',
     });
   }, [isDarkMode, navigation]);
-  
+
   const currentStyles = isDarkMode ? styles2 : styles;
 
+  const fallbackImage = 'https://via.placeholder.com/150';
 
   const renderItem = ({ item }) => (
     <View style={currentStyles.productContainer}>
-      <Image style={currentStyles.productImage} source={{ uri: item.imagen }} />
+      <Image
+        style={currentStyles.productImage}
+        source={{ uri: item.img || fallbackImage }}
+      />
       <View style={currentStyles.productDetails}>
-        <Text style={{ color: 'white' }}>id: {item.id}</Text>
-        <Text style={{ color: 'white' }}>codigo: {item.codigo}</Text>
-        <Text style={{ color: 'white' }}>nombre: {item.nombre}</Text>
-        <Text style={{ color: 'white' }}>marca: {item.marca}</Text>
-        <Text style={{ color: 'white' }}>precio venta: $ {item.precioventaf}</Text>
-        <Text style={{ color: 'white' }}>stock: {item.stock} unidades</Text>
+        <Text style={{ color: 'white' }}>id: {item.id_producto}</Text>
+        <Text style={{ color: 'white' }}>nombre: {item.nombre_producto}</Text>
+        <Text style={{ color: 'white' }}>descripcion: {item.descripcion}</Text>
+        <Text style={{ color: 'white' }}>precio venta: $ {item.precio_venta_final}</Text>
+        <Text style={{ color: 'white' }}>cantidad: {item.cantidad} unidades</Text>
       </View>
       <View style={currentStyles.buttonContainer}>
         <TouchableOpacity style={currentStyles.button}>
@@ -66,64 +112,75 @@ export default function App() {
     <SafeAreaView style={currentStyles.safeArea}>
       <StatusBar barStyle="light-content" />
       <View style={currentStyles.container}>
-
+        {/* Barra de búsqueda */}
         <View style={currentStyles.searchBar}>
-          <TextInput style={currentStyles.searchInput} placeholder="Buscar por nombre..." placeholderTextColor={isDarkMode ? "#506D8A" : "#FFF"}/>
+          <TextInput
+            style={currentStyles.searchInput}
+            placeholder="Buscar por nombre..."
+            placeholderTextColor={isDarkMode ? "#506D8A" : "#FFF"}
+            value={searchQuery}
+            onChangeText={onSearchChange} // Actualiza la búsqueda en tiempo real
+          />
           <Button title="buscar" color="#E17055" onPress={() => {}} />
-          <Button title="filtrar" color="#E17055" onPress={() => {}} />
+          <Button title="filtrar" color="#E17055" onPress={() => setFilterModalVisible(true)} />
         </View>
 
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color="#E17055" />
+        ) : (
+          <FlatList
+            data={filteredData} // Renderizar la lista filtrada
+            renderItem={renderItem}
+            keyExtractor={item => item.id_producto.toString()}
+          />
+        )}
 
         {selectedProduct && (
           <Modal
             animationType="slide"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
+            onRequestClose={() => setModalVisible(false)}
           >
             <View style={currentStyles.modalContainer}>
               <View style={currentStyles.modalContent}>
                 <TouchableOpacity onPress={() => setModalVisible(false)} style={currentStyles.closeButton}>
                   <Text style={{ fontSize: 18 }}>×</Text>
                 </TouchableOpacity>
-                <Image style={currentStyles.productImage} source={{ uri: selectedProduct.imagen }} />
-                <Text style={currentStyles.modalText}>codigo:</Text>
-                <TextInput style={currentStyles.modalInput} value={selectedProduct.codigo} editable={false} />
+                <Image style={currentStyles.productImage} source={{ uri: selectedProduct.img || fallbackImage }} />
                 <Text style={currentStyles.modalText}>nombre:</Text>
-                <TextInput style={currentStyles.modalInput} value={selectedProduct.nombre} editable={false} />
-                <Text style={currentStyles.modalText}>marca:</Text>
-                <TextInput style={currentStyles.modalInput} value={selectedProduct.marca} editable={false} />
-                <Text style={currentStyles.modalText}>categoria:</Text>
-                <TextInput style={currentStyles.modalInput} value={selectedProduct.categoria} editable={false} />
-                <Text style={currentStyles.modalText}>subcategoria:</Text>
-                <TextInput style={currentStyles.modalInput} value={selectedProduct.subcategoria} editable={false} />
-                <Text style={currentStyles.modalText}>stock (unidades):</Text>
-                <TextInput style={currentStyles.modalInput} value={`${selectedProduct.stock}`} editable={false} />
-                <Text style={currentStyles.modalText}>precio compra:</Text>
-                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.preciocompra}`} editable={false} />
-                <Text style={currentStyles.modalText}>porcentaje ganancia:</Text>
-                <TextInput style={currentStyles.modalInput} value={`${selectedProduct.porcentajeganancia} %`} editable={false} />
-                <Text style={currentStyles.modalText}>precio neto:</Text>
-                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioneto}`} editable={false} />
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.nombre_producto} editable={false} />
+                <Text style={currentStyles.modalText}>descripcion:</Text>
+                <TextInput style={currentStyles.modalInput} value={selectedProduct.descripcion} editable={false} />
+                <Text style={currentStyles.modalText}>cantidad (unidades):</Text>
+                <TextInput style={currentStyles.modalInput} value={`${selectedProduct.cantidad}`} editable={false} />
                 <Text style={currentStyles.modalText}>precio venta:</Text>
-                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioventa}`} editable={false} />
-                <Text style={currentStyles.modalText}>precio venta final:</Text>
-                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precioventaf}`} editable={false} />
+                <TextInput style={currentStyles.modalInput} value={`$ ${selectedProduct.precio_venta_final}`} editable={false} />
               </View>
             </View>
           </Modal>
         )}
+
+        {/* Modal de filtros */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={filterModalVisible}
+          onRequestClose={() => setFilterModalVisible(false)}
+        >
+          <View style={currentStyles.filterModalContainer}>
+            <View style={currentStyles.filterModalContent}>
+              <Text style={currentStyles.modalText}>Filtros</Text>
+              <Button title="Aplicar" onPress={() => setFilterModalVisible(false)} />
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -222,6 +279,19 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     marginBottom: 5,
   },
+  filterModalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    filterModalContent: {
+      width: '80%',
+      backgroundColor: '#4B5A6C',
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+    },
 });
 
 const styles2 = StyleSheet.create({
@@ -327,4 +397,17 @@ const styles2 = StyleSheet.create({
     borderColor: '#ccc',
     marginBottom: 5,
   },
+  filterModalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    filterModalContent: {
+      width: '80%',
+      backgroundColor: '#4B5A6C',
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+    },
 });
