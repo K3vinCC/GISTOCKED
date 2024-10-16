@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Modal, TextInput, Alert, ScrollView } from 'react-native';
 
 // Función para generar una contraseña segura aleatoria
 const generarContrasenaSegura = () => {
@@ -15,16 +15,20 @@ const generarContrasenaSegura = () => {
 const AgregarUsuario = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
-  const [nombre, setNombre] = useState('');
+  const [nombreUsuario, setNombreUsuario] = useState('');
+  const [nombreEmpresa, setNombreEmpresa] = useState('');
   const [password, setPassword] = useState('');
-  const [rol, setRol] = useState('');
+  const [email, setEmail] = useState('');
+  const [pin, setPin] = useState('');
+  const [idRol, setIdRol] = useState('');
+  const [idAdmin, setIdAdmin] = useState('');
   const [usuarioActual, setUsuarioActual] = useState(null);
-  const [passwordVisible, setPasswordVisible] = useState(false); // Estado para controlar la visibilidad de la contraseña
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   // Función para obtener usuarios desde la API
   const fetchUsuarios = async () => {
     try {
-      const response = await fetch('http://192.168.1.10:8000/api/v1/usuarios/', {
+      const response = await fetch('http://192.168.1.10:8000/api/usuarios/', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -54,12 +58,20 @@ const AgregarUsuario = () => {
     }
 
     try {
-      const response = await fetch('http://192.168.1.10:8000/api/v1/usuarios/', {
+      const response = await fetch('http://192.168.1.10:8000/api/usuarios/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nombre, contraseña: password, rol: Number(rol) }), // Cambiar el cuerpo para incluir la contraseña y rol como número
+        body: JSON.stringify({
+          nombre_usuario: nombreUsuario,
+          nombre_empresa: nombreEmpresa,
+          password: password,
+          email: email,
+          pin: pin,
+          id_rol: Number(idRol),
+          id_admin: idAdmin ? Number(idAdmin) : null,
+        }),
       });
 
       if (response.ok) {
@@ -76,12 +88,20 @@ const AgregarUsuario = () => {
   // Función para editar un usuario
   const editarUsuario = async (id) => {
     try {
-      const response = await fetch(`http://192.168.1.10:8000/api/v1/usuarios/${id}/`, {
+      const response = await fetch(`http://192.168.1.10:8000/api/usuarios/${id}/`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ nombre, contraseña: password, rol: Number(rol) }), // Cambiar el cuerpo para incluir la contraseña y rol como número
+        body: JSON.stringify({
+          nombre_usuario: nombreUsuario,
+          nombre_empresa: nombreEmpresa,
+          password: password,
+          email: email,
+          pin: pin,
+          id_rol: Number(idRol),
+          id_admin: idAdmin ? Number(idAdmin) : null,
+        }),
       });
 
       if (response.ok) {
@@ -106,7 +126,7 @@ const AgregarUsuario = () => {
           text: 'Eliminar',
           onPress: async () => {
             try {
-              const response = await fetch(`http://192.168.1.10:8000/api/v1/usuarios/${id}/`, {
+              const response = await fetch(`http://192.168.1.10:8000/api/usuarios/${id}/`, {
                 method: 'DELETE',
               });
 
@@ -127,20 +147,24 @@ const AgregarUsuario = () => {
   // Renderizado del item en la lista
   const renderItem = ({ item }) => (
     <View style={styles.usuarioItem}>
-      <Text style={styles.nombre}>{item.nombre}</Text>
+      <Text style={styles.nombre}>{item.nombre_usuario}</Text>
       <TouchableOpacity
         style={styles.buttonEditar}
         onPress={() => {
-          setNombre(item.nombre);
-          setRol(item.rol.toString()); // Convertir rol a string para el TextInput
-          setPassword(item.contraseña); // Mostrar la contraseña existente al editar
-          setUsuarioActual(item.id);
+          setNombreUsuario(item.nombre_usuario);
+          setNombreEmpresa(item.nombre_empresa);
+          setPassword(item.password);
+          setEmail(item.email);
+          setPin(item.pin);
+          setIdRol(item.id_rol.toString());
+          setIdAdmin(item.id_admin ? item.id_admin.toString() : '');
+          setUsuarioActual(item.codigo_vendedor);
           setModalVisible(true);
         }}
       >
         <Text style={styles.buttonText}>Editar</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => eliminarUsuario(item.id)}>
+      <TouchableOpacity style={styles.button} onPress={() => eliminarUsuario(item.codigo_vendedor)}>
         <Text style={styles.buttonText}>Eliminar</Text>
       </TouchableOpacity>
     </View>
@@ -153,9 +177,13 @@ const AgregarUsuario = () => {
         <TouchableOpacity
           style={styles.addButton}
           onPress={() => {
-            setNombre('');
-            setRol('');
+            setNombreUsuario('');
+            setNombreEmpresa('');
             setPassword(generarContrasenaSegura());
+            setEmail('');
+            setPin('');
+            setIdRol('');
+            setIdAdmin('');
             setUsuarioActual(null);
             setModalVisible(true);
           }}
@@ -164,51 +192,67 @@ const AgregarUsuario = () => {
         </TouchableOpacity>
       </View>
       <Text style={styles.label}>Cantidad de usuarios: {usuarios.length}</Text>
-      <FlatList data={usuarios} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
+      <FlatList data={usuarios} renderItem={renderItem} keyExtractor={(item) => item.codigo_vendedor.toString()} />
 
       {/* Modal para agregar/editar usuario */}
       <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>{usuarioActual ? 'Editar Usuario' : 'Agregar Usuario'}</Text>
-          <Text style={styles.label}>Nombre:</Text>
-          <TextInput placeholder="Nombre" style={styles.input} value={nombre} onChangeText={setNombre} />
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Text style={styles.modalText}>{usuarioActual ? 'Editar Usuario' : 'Agregar Usuario'}</Text>
 
-          <Text style={styles.label}>Rol (número):</Text>
-          <TextInput placeholder="Rol (número)" style={styles.input} value={rol} onChangeText={setRol} keyboardType="numeric" />
-          
-          <Text style={styles.label}>Contraseña:</Text>
-          <View style={styles.passwordContainer}>
-            <TextInput
-              placeholder="Contraseña"
-              style={styles.input}
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!passwordVisible} // Cambiar visibilidad según el estado
-            />
-            <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
-              <Text>{passwordVisible ? 'Ocultar' : 'Mostrar'}</Text>
+            <Text style={styles.label}>Nombre de Usuario:</Text>
+            <TextInput placeholder="Nombre de Usuario" style={styles.input} value={nombreUsuario} onChangeText={setNombreUsuario} />
+
+            <Text style={styles.label}>Nombre de Empresa:</Text>
+            <TextInput placeholder="Nombre de Empresa" style={styles.input} value={nombreEmpresa} onChangeText={setNombreEmpresa} />
+
+            <Text style={styles.label}>Email:</Text>
+            <TextInput placeholder="Email" style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
+
+            <Text style={styles.label}>PIN:</Text>
+            <TextInput placeholder="PIN" style={styles.input} value={pin} onChangeText={setPin} keyboardType="numeric" />
+
+            <Text style={styles.label}>ID Rol:</Text>
+            <TextInput placeholder="ID Rol" style={styles.input} value={idRol} onChangeText={setIdRol} keyboardType="numeric" />
+
+            <Text style={styles.label}>ID Admin:</Text>
+            <TextInput placeholder="ID Admin" style={styles.input} value={idAdmin} onChangeText={setIdAdmin} keyboardType="numeric" />
+
+            <Text style={styles.label}>Contraseña:</Text>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder="Contraseña"
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!passwordVisible}
+              />
+              <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+                <Text>{passwordVisible ? 'Ocultar' : 'Mostrar'}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.buttonGenerate} onPress={() => setPassword(generarContrasenaSegura())}>
+              <Text style={styles.buttonText}>Generar Contraseña</Text>
             </TouchableOpacity>
-          </View>
 
-          <TouchableOpacity style={styles.buttonGenerate} onPress={() => setPassword(generarContrasenaSegura())}>
-            <Text style={styles.buttonText}>Generar Contraseña Segura</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                if (usuarioActual) {
+                  editarUsuario(usuarioActual);
+                } else {
+                  agregarUsuario();
+                }
+              }}
+            >
+              <Text style={styles.buttonText}>{usuarioActual ? 'Guardar Cambios' : 'Agregar Usuario'}</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.buttonSubmit}
-            onPress={() => {
-              if (usuarioActual) {
-                editarUsuario(usuarioActual);
-              } else {
-                agregarUsuario();
-              }
-            }}
-          >
-            <Text style={styles.buttonText}>Confirmar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonCancel} onPress={() => setModalVisible(false)}>
-            <Text style={styles.buttonText}>Cancelar</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.buttonClose]} onPress={() => setModalVisible(false)}>
+              <Text style={styles.buttonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
     </View>
@@ -218,100 +262,88 @@ const AgregarUsuario = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#34495E',
   },
   title: {
-    color: '#fff',
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   addButton: {
-    backgroundColor: '#2ecc71',
-    padding: 10,
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 5,
   },
   buttonText: {
     color: '#fff',
+    fontSize: 16,
   },
   label: {
-    paddingVertical: 5,
-    color: '#666',
-    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 10,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 5,
   },
   usuarioItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
+    padding: 15,
+    backgroundColor: '#f9f9f9',
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-  },
-  nombre: {
-    fontWeight: 'bold',
-  },
-  buttonEditar: {
-    backgroundColor: '#34495E',
-    padding: 5,
-    borderRadius: 3,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   button: {
-    backgroundColor: '#e74c3c',
-    padding: 5,
-    borderRadius: 3,
+    backgroundColor: '#FF0000',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },
+  buttonEditar: {
+    backgroundColor: '#1E90FF',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    marginRight: 10,
   },
   modalView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 35,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalText: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
-  },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingLeft: 10,
-    borderRadius: 5,
   },
   passwordContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
   buttonGenerate: {
-    backgroundColor: '#3498db',
-    padding: 10,
+    backgroundColor: '#FFA500',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 5,
-    marginBottom: 10,
+    marginTop: 10,
   },
-  buttonSubmit: {
-    backgroundColor: '#2ecc71',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonCancel: {
-    backgroundColor: '#e74c3c',
-    padding: 10,
-    borderRadius: 5,
+  buttonClose: {
+    backgroundColor: '#999',
+    marginTop: 20,
   },
 });
 
