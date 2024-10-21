@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Boleta Electrónica</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .error {
+            font-size: 12px;
+            color: red;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simulador de Boleta Electrónica</h1>
+
+<form id="boletaForm">
+    <input type="text" class="input" id="clientRut" placeholder="RUT del Cliente" required>
+    <div class="error" id="errorRut"></div>
+
+    <input type="text" class="input" id="description" placeholder="Descripción" required>
+    <div class="error" id="errorDescription"></div>
+
+    <input type="number" class="input" id="amount" placeholder="Monto ($)" required>
+    <div class="error" id="errorAmount"></div>
+
+    <input type="text" class="input" id="paymentMethod" placeholder="Método de Pago (Efectivo, Tarjeta, Transferencia)" required>
+    <div class="error" id="errorPaymentMethod"></div>
+
+    <button type="submit" class="input">Emitir Boleta</button>
+</form>
+
+<script>
+    document.getElementById('boletaForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const clientRut = document.getElementById('clientRut').value;
+        const description = document.getElementById('description').value;
+        const amount = parseFloat(document.getElementById('amount').value);
+        const paymentMethod = document.getElementById('paymentMethod').value;
+
+        const iva = (amount * 0.19).toFixed(2);
+        const totalAmount = (amount + parseFloat(iva)).toFixed(2);
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.text('MICHAEL ESTEBAN CORTES CARRASCO', 10, 10);
+        doc.text('19.541.951-5', 10, 20);
+        doc.text('Giro: TALLER AUTOMOTRIZ VENTA', 10, 30);
+        doc.text('REPUESTOS Y ACCESORIOS ARTICULOS', 10, 40);
+        doc.text('FERRETERIA', 10, 50);
+        doc.text('CALLE PEDRO MONTT 61', 10, 60);
+        doc.text('Vilcun, Vilcun', 10, 70);
+
+        doc.text(`BOLETA ELECTRONICA NUMERO: 935`, 10, 80);
+        doc.text(`Cliente RUT: ${clientRut}`, 10, 90);
+        doc.text(`Descripción: ${description}`, 10, 100);
+        doc.text(`Monto: $${amount}`, 10, 110);
+        doc.text(`IVA incluido: $${iva}`, 10, 120);
+        doc.text(`Total: $${totalAmount}`, 10, 130);
+        doc.text(`Método de Pago: ${paymentMethod}`, 10, 140);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 150);
+        doc.text('Timbre Electrónico SII', 10, 160);
+        doc.text('Res. 99 de 2014', 10, 170);
+        doc.text('Verifique documento en', 10, 180);
+        doc.text('sii.cl', 10, 190);
+
+        doc.save('boleta.pdf');
+    });
+</script>
+
+</body>
+</html>

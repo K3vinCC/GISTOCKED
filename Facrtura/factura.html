@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factura Electrónica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h2 {
+            margin: 0;
+            color: red;
+        }
+        .info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .info div {
+            width: 45%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .totals {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .totals div {
+            margin: 5px 0;
+        }
+        .barcode {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .signature {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .cedible {
+            text-align: right;
+            font-weight: bold;
+            color: red;
+        }
+
+        /* Para impresión en tamaño A4 */
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        @media print {
+            .container {
+                width: 100%;
+                height: auto;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <img src="descarga.jpg" alt="Logo Empresa" style="float: left; height: 50px;">
+            <h2 id="razonSocialEmpresa">Razón Social Empresa</h2>
+            <p id="direccionEmpresa">Dirección de la Empresa - Comuna - Ciudad</p>
+        </div>
+        <div style="float: right;">
+            <p id="rutEmpresa">RUT: 99.999.999-9</p>
+            <p>Factura Electrónica</p>
+            <p>Nº 1111</p>
+        </div>
+    </div>
+    
+    <div class="info">
+        <div>
+            <p><strong>Señores:</strong> <span id="razonSocialReceptor">Razón Social Receptor</span></p>
+            <p><strong>RUT:</strong> <span id="rutReceptor">88.888.888-8</span></p>
+            <p><strong>Giro:</strong> <span id="giroReceptor">Giro del Cliente</span></p>
+            <p><strong>Dirección:</strong> <span id="direccionReceptor">Dirección del Cliente</span></p>
+            <p><strong>Comuna:</strong> <span id="comunaReceptor">Comuna</span></p>
+            <p><strong>Contacto:</strong> <span id="contactoReceptor">Atención Sr. Cliente</span></p>
+        </div>
+        <div>
+            <p><strong>Fecha Emisión:</strong> 30 de Agosto del 2005</p>
+        </div>
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Desc</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody id="productos">
+            <!-- Los productos se cargarán dinámicamente -->
+        </tbody>
+    </table>
+    
+    <div class="totals">
+        <div><strong>Monto Neto: </strong>$<span id="neto">100.000</span></div>
+        <div><strong>I.V.A 19%: </strong>$<span id="iva">19.000</span></div>
+        <div><strong>Total: </strong>$<span id="total">119.000</span></div>
+    </div>
+    
+    <div class="barcode">
+        <img src="descarga.jpg" alt="Código de Barras" height="80px">
+    </div>
+    
+    <div class="signature">
+        <div>
+            <p>Nombre:</p>
+            <p>RUT:</p>
+            <p>Fecha:</p>
+            <p>Firma:</p>
+        </div>
+        <div>
+            <p class="cedible">CEDIBLE</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// URL del archivo XML
+const url = 'C:/Users/corte/Desktop/Facrtura/script.js';
+
+// Crear un nuevo objeto XMLHttpRequest
+let xhttp = new XMLHttpRequest();
+
+// Configurar la solicitud HTTP GET para el archivo XML
+xhttp.open('GET', url, true);
+
+// Definir el tipo de respuesta esperada como XML
+xhttp.responseType = 'document';
+
+// Función que se ejecuta cuando la solicitud se completa
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        // Acceder al documento XML obtenido
+        let xmlDoc = this.responseXML;
+
+        // Obtener datos de la factura
+        let empresa = xmlDoc.querySelector('factura > empresa');
+        let receptor = xmlDoc.querySelector('factura > receptor');
+        let totales = xmlDoc.querySelector('factura > totales');
+
+        // Extraer los valores y mostrarlos en el HTML
+        document.getElementById('razonSocialEmpresa').textContent = empresa.querySelector('razonSocial').textContent;
+        document.getElementById('rutEmpresa').textContent = 'RUT: ' + empresa.querySelector('rut').textContent;
+        document.getElementById('direccionEmpresa').textContent = empresa.querySelector('direccion').textContent + ' - ' + empresa.querySelector('comunaCiudad').textContent;
+
+        document.getElementById('razonSocialReceptor').textContent = receptor.querySelector('razonSocial').textContent;
+        document.getElementById('rutReceptor').textContent = receptor.querySelector('rut').textContent;
+        document.getElementById('giroReceptor').textContent = receptor.querySelector('giro').textContent;
+        document.getElementById('direccionReceptor').textContent = receptor.querySelector('direccion').textContent;
+        document.getElementById('comunaReceptor').textContent = receptor.querySelector('comuna').textContent;
+        document.getElementById('contactoReceptor').textContent = receptor.querySelector('contacto').textContent;
+
+        // Cargar productos en la tabla
+        let productos = xmlDoc.querySelectorAll('factura > productos > producto');
+        let productosHtml = '';
+        productos.forEach(function(producto) {
+            let codigo = producto.querySelector('codigo').textContent;
+            let descripcion = producto.querySelector('descripcion').textContent;
+            let cantidad = producto.querySelector('cantidad').textContent;
+            let precio = producto.querySelector('precio').textContent;
+            let descuento = producto.querySelector('descuento').textContent;
+            let valor = producto.querySelector('valor').textContent;
+
+            productosHtml += `<tr>
+                <td>${codigo}</td>
+                <td>${descripcion}</td>
+                <td>${cantidad}</td>
+                <td>$${precio}</td>
+                <td>${descuento}</td>
+                <td>$${valor}</td>
+            </tr>`;
+        });
+        document.getElementById('productos').innerHTML = productosHtml;
+
+        // Mostrar los totales
+        document.getElementById('neto').textContent = totales.querySelector('neto').textContent;
+        document.getElementById('iva').textContent = totales.querySelector('iva').textContent;
+        document.getElementById('total').textContent = totales.querySelector('total').textContent;
+    }
+};
+
+// Enviar la solicitud
+xhttp.send();
+</script>
+
+</body>
+</html>

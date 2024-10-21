@@ -1,0 +1,64 @@
+<factura>
+    <empresa>
+        <razonSocial>Razón Social Empresa</razonSocial>
+        <rut>99.999.999-9</rut>
+        <giro>Giro de la Empresa</giro>
+        <direccion>Dirección de la Empresa</direccion>
+        <comunaCiudad>Comuna - Ciudad</comunaCiudad>
+    </empresa>
+    <receptor>
+        <razonSocial>Razón Social Receptor</razonSocial>
+        <rut>88.888.888-8</rut>
+        <giro>Giro del Cliente</giro>
+        <direccion>Dirección del Cliente</direccion>
+        <comuna>Comuna Cliente</comuna>
+        <contacto>Atención Sr. Cliente</contacto>
+    </receptor>
+    <productos>
+        <producto>
+            <codigo>001</codigo>
+            <descripcion>Producto 1</descripcion>
+            <cantidad>2</cantidad>
+            <precio>6000</precio>
+            <descuento>0</descuento>
+            <valor>10000</valor>
+        </producto>
+        <producto>
+            <codigo>002</codigo>
+            <descripcion>Producto 2</descripcion>
+            <cantidad>1</cantidad>
+            <precio>5000</precio>
+            <descuento>0</descuento>
+            <valor>5000</valor>
+        </producto>
+        <producto>
+            <codigo>003</codigo>
+            <descripcion>Producto 3</descripcion>
+            <cantidad>7</cantidad>
+            <precio>10000</precio>
+            <descuento>0</descuento>
+            <valor>80000</valor>
+        </producto>
+        <producto>
+            <codigo>004</codigo>
+            <descripcion>Producto 4</descripcion>
+            <cantidad>7</cantidad>
+            <precio>10000</precio>
+            <descuento>0</descuento>
+            <valor>80000</valor>
+        </producto>
+        <producto>
+            <codigo>005</codigo>
+            <descripcion>Producto 5</descripcion>
+            <cantidad>7</cantidad>
+            <precio>10000</precio>
+            <descuento>0</descuento>
+            <valor>80000</valor>
+        </producto>
+    </productos>
+    <totales>
+        <neto>100000</neto>
+        <iva>19000</iva>
+        <total>119000</total>
+    </totales>
+</factura>
