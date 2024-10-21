@@ -47,7 +47,7 @@ export default (props) => {
     <SafeAreaView style={currentStyles.container}>
       <ScrollView contentContainerStyle={currentStyles.scrollView}>
         <View style={currentStyles.row2}>
-          <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Inventario')}>
             <View style={currentStyles.column}>
               <Image
                 source={require('../../assets/INICIO/inventario.png')}

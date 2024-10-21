@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen'; 
-
+import { UserProvider } from './src/components/UserContext';
 import Login from './src/screens/Login'
 import Perfil from './src/screens/Pefil';
 import Home from './src/screens/Home';
@@ -44,9 +44,11 @@ const App = () => {
   };
   return (
     <ThemeProvider>
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Inicio Sesion">
-        <Stack.Screen name="Inicio sesion" component={Login}/>
+        <Stack.Screen name="Inicio sesion" component={Login} options={{ headerShown: false
+                                                                    }}/>
         <Stack.Screen name="Inicio" component={Home} options={{ headerStyle: {
                                                                          backgroundColor: '#34495E',
                                                                       },
@@ -66,13 +68,14 @@ const App = () => {
                                                                                  headerTintColor: '#FFF',
                                                                                  headerTitleStyle: {
                                                                                     fontFamily: 'Racing'}}}/>
-        <Stack.Screen name="inventario" component={Ginventario} />
+        <Stack.Screen name="Inventario" component={Ginventario} />
         <Stack.Screen name="Ainventario" component={Ainventario} />
         <Stack.Screen name="Perfil" component={Perfil} />
         <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
         <Stack.Screen name="Ventas" component={ZVentas} />
       </Stack.Navigator>
     </NavigationContainer>
+    </UserProvider>
     </ThemeProvider>
   );
 };
