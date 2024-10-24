@@ -475,7 +475,7 @@ const styles2 = StyleSheet.create({
     modalContainer: {
       flex: 1,
       justifyContent: 'center',
-      alignItems: 'center',s
+      alignItems: 'center',
     },
     cameraContainer: {
       width: '80%',
