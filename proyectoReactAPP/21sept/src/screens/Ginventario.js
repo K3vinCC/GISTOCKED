@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
 import { Picker } from '@react-native-picker/picker';
 import { Alert } from 'react-native';
-
+import { useUser } from '../components/UserContext';
 
 export default function App() {
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -15,7 +15,7 @@ export default function App() {
     const [confirmDeleteModalVisible, setConfirmDeleteModalVisible] = useState(false); // Modal para confirmar eliminación
     const [productToDelete, setProductToDelete] = useState(null);
     const [productToEdit, setProductToEdit] = useState(null); // Estado para el producto a editar
-
+    const { user } = useUser();
     // Define el estado para las categorías
     const [categorias, setCategorias] = useState([]);
 
@@ -54,7 +54,7 @@ export default function App() {
         // Función para obtener productos desde la API
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://190.114.252.218:8000/api/inventarios/');
+                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.nombre_empresa}/`);
                 setData(response.data); // Asigna los productos obtenidos a data
             } catch (error) {
                 console.error(error);

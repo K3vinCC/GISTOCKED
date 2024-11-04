@@ -1,51 +1,49 @@
-// Retaining existing import statements and structures...
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Alert, Modal, Button } from 'react-native';
 import axios from 'axios';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import { BarCodeScanner } from 'expo-barcode-scanner'; 
 import { StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
-
+import { useUser } from '../components/UserContext';
 export default function App() {
     const { isDarkMode } = useContext(ThemeContext);
     const navigation = useNavigation();
-
-    const [products, setProducts] = useState([]);
+  
+    const [products, setProducts] = useState([]); // Estado para almacenar productos de la BD
     const [searchCodigo, setSearchCodigo] = useState('');
     const [addedProducts, setAddedProducts] = useState([]);
     const [total, setTotal] = useState(0);
     const [hasPermission, setHasPermission] = useState(null);
     const [scanning, setScanning] = useState(false);
-    const [quantityToAdd, setQuantityToAdd] = useState(1);
-
-    // Effect to handle header styles based on theme
+    const { user } = useUser();
     useEffect(() => {
         navigation.setOptions({
             headerStyle: {
                 backgroundColor: isDarkMode ? '#0B1016' : '#34495E',
-            },
-            headerTintColor: '#FFF',
+            }, 
+            headerTintColor:  '#FFF',
         });
     }, [isDarkMode, navigation]);
-
-    // Apply dark mode styling if needed
+    
     const currentStyles = isDarkMode ? styles2 : styles;
-
-    // Fetch products from the API
+    
     useEffect(() => {
+        // Solicitud para obtener productos de la base de datos al montar el componente
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://190.114.252.218:8000/api/inventarios');
+                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.nombre_empresa}/`); // Cambia la URL según tu backend
+                console.log('Productos recibidos:', response.data); // Log de productos recibidos
                 setProducts(response.data);
             } catch (error) {
+                console.error('Error al cargar los productos:', error);
                 Alert.alert('Error', 'No se pudieron cargar los productos de la base de datos.');
             }
         };
+
         fetchProducts();
     }, []);
 
-    // Request barcode scanner permission
     useEffect(() => {
         const getBarCodeScannerPermissions = async () => {
             const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -54,211 +52,188 @@ export default function App() {
         getBarCodeScannerPermissions();
     }, []);
 
-    // Functionality to add a product based on barcode
-    const handleAddProduct = (codigo, quantity) => {
-        const product = products.find(p => String(p.codigo) === String(codigo));
-
+    const handleAddProduct = (codigo) => {
+        console.log('Código a agregar:', codigo); // Log del código que se intenta agregar
+        const product = products.find(p => String(p.codigo) === String(codigo)); // Convertir ambos a String para asegurar coincidencias
         if (product) {
             const updatedProducts = [...addedProducts];
             const index = updatedProducts.findIndex(p => String(p.codigo) === String(codigo));
 
-            // Si no se proporciona cantidad (vacío), agregar 1 por defecto
-            const finalQuantity = quantity ? quantity : 1;
-
             if (index !== -1) {
-                const newQuantity = updatedProducts[index].cantidad + finalQuantity;
-                if (newQuantity <= product.cantidad) {
-                    updatedProducts[index].cantidad = newQuantity;
-                    setTotal(total + product.precio_venta_final * finalQuantity);
+                // Si el producto ya fue agregado, solo incrementamos la cantidad y actualizamos el total
+                const newQuantity = updatedProducts[index].cantidad + 1;
+                if (newQuantity <= product.cantidad) { // Comprobar límite de cantidad
+                    updatedProducts[index].cantidad = newQuantity; // Incrementamos la cantidad
+                    setTotal(total + product.precio_venta_final); // Sumar el precio al total
                 } else {
                     Alert.alert('Límite alcanzado', 'No puedes agregar más de la cantidad disponible en inventario.');
                 }
             } else {
-                if (finalQuantity <= product.cantidad) {
-                    const newProduct = { ...product, cantidad: finalQuantity };
-                    updatedProducts.push(newProduct);
-                    setTotal(total + product.precio_venta_final * finalQuantity);
-                } else {
-                    Alert.alert('Límite alcanzado', 'No puedes agregar más de la cantidad disponible en inventario.');
-                }
+                // Si no ha sido agregado, lo añadimos con cantidad 1
+                const newProduct = { ...product, cantidad: 1 }; // Añadir la cantidad inicial
+                updatedProducts.push(newProduct);
+                setTotal(total + product.precio_venta_final); // Sumar al total
             }
             setAddedProducts(updatedProducts);
         } else {
             Alert.alert('Error', `Producto con código ${codigo} no encontrado.`);
         }
-
-        setSearchCodigo(''); // Limpia el campo del código
+        setSearchCodigo('');
     };
 
-    // Remove product from the cart
     const handleRemoveProduct = (codigo) => {
         const productToRemove = addedProducts.find(p => p.codigo === codigo);
         if (productToRemove) {
             const updatedProducts = addedProducts.filter(p => p.codigo !== codigo);
-            const totalToRemove = productToRemove.precio_venta_final * productToRemove.cantidad;
+            const totalToRemove = productToRemove.precio_venta_final * productToRemove.cantidad; // Calcular total a remover
             setAddedProducts(updatedProducts);
-            setTotal(total - totalToRemove);
+            setTotal(total - totalToRemove); // Restar el total
         }
     };
 
-    // Functionality for barcode scanning
     const handleBarCodeScanned = ({ type, data }) => {
-        setScanning(false);
-        setSearchCodigo(data);
-        handleAddProduct(data);
+        console.log('Código escaneado:', data); // Log del código escaneado
+        setScanning(false); 
+        setSearchCodigo(data); 
+        handleAddProduct(data); 
     };
 
-    // Increment quantity of product in the cart
     const incrementQuantity = (codigo) => {
-        const updatedProducts = addedProducts.map(product => {
-            if (product.codigo === codigo) {
-                const newQuantity = product.cantidad + 1;
-                const productInDB = products.find(p => p.codigo === codigo);
-                if (productInDB && newQuantity <= productInDB.cantidad) {
-                    setTotal(total + product.precio_venta_final);
-                    return { ...product, cantidad: newQuantity };
-                } else {
-                    Alert.alert('Límite alcanzado', 'No puedes agregar más de la cantidad disponible en inventario.');
-                }
-            }
-            return product;
-        });
-        setAddedProducts(updatedProducts);
-    };
+      const updatedProducts = addedProducts.map(product => {
+          if (product.codigo === codigo) {
+              const newQuantity = product.cantidad + 1;
+              const productInDB = products.find(p => p.codigo === codigo);
+              if (productInDB && newQuantity <= productInDB.cantidad) {
+                  setTotal(total + product.precio_venta_final); // Sumar al total
+                  return { ...product, cantidad: newQuantity };
+              } else {
+                  Alert.alert('Límite alcanzado', 'No puedes agregar más de la cantidad disponible en inventario.');
+              }
+          }
+          return product;
+      });
+      setAddedProducts(updatedProducts);
+  };
 
-    // Decrement quantity with delay
-    const decrementQuantity = (codigo) => {
-        const updatedProducts = addedProducts.map(product => {
-            if (product.codigo === codigo && product.cantidad > 1) {
-                setTimeout(() => {
-                    const newQuantity = product.cantidad - 1;
-                    setTotal(total - product.precio_venta_final);
-                    return { ...product, cantidad: newQuantity };
-                }, 200); // Delay added here
+  const decrementQuantity = (codigo) => {
+    const updatedProducts = addedProducts.map(product => {
+        if (product.codigo === codigo) {
+            if (product.cantidad > 1) {
+                const newQuantity = product.cantidad - 1;
+                setTotal(total - product.precio_venta_final); // Restar del total
+                return { ...product, cantidad: newQuantity };
             }
-            return product;
-        });
-        setAddedProducts(updatedProducts);
-    };
-
-    // Render products in the FlatList
-    const handleQuantityChange = (codigo, newQuantity) => {
-        const updatedProducts = [...addedProducts];
-        const index = updatedProducts.findIndex(p => p.codigo === codigo);
-
-        if (index !== -1) {
-            const productInDB = products.find(p => p.codigo === codigo);
-
-            // Si el TextInput está vacío (newQuantity es NaN), no hacer nada, solo actualizar el total a 0
-            if (isNaN(newQuantity)) {
-                updatedProducts[index].cantidad = '';
-                setTotal(total - updatedProducts[index].cantidad * productInDB.precio_venta_final);
-            }
-            // Si la cantidad es válida y no excede el inventario disponible
-            else if (productInDB && newQuantity <= productInDB.cantidad) {
-                const difference = newQuantity - updatedProducts[index].cantidad;
-                updatedProducts[index].cantidad = newQuantity;
-                setTotal(total + difference * productInDB.precio_venta_final);
-            } else {
-                Alert.alert('Límite alcanzado', 'No puedes agregar más de la cantidad disponible en inventario.');
-            }
-            setAddedProducts(updatedProducts);
         }
-    };
-
-    // Cambios específicos en las vistas para permitir la edición de la cantidad directamente
-    const renderProduct = ({ item }) => {
-        const product = addedProducts.find(p => p.codigo === item.codigo);
-        const quantity = product ? product.cantidad : '';
-
-        return (
-            <View style={currentStyles.productRow}>
-                <Text style={currentStyles.productText}>Nombre: {item.nombre_producto}</Text>
-                <Text style={currentStyles.productText}>Precio: ${item.precio_venta_final.toFixed(2)}</Text>
-
-                <View style={currentStyles.quantityContainer}>
-                    {/* Input editable de cantidad */}
-                    <TextInput
-                        style={currentStyles.quantityInput}
-                        keyboardType="numeric"
-                        value={String(quantity)} // Si no hay cantidad, será un string vacío
-                        onChangeText={(value) => handleQuantityChange(item.codigo, parseInt(value) || '')} // No poner ningún valor si se borra todo
-                    />
-                </View>
-
-                <View style={currentStyles.productActions}>
-                    <TouchableOpacity style={currentStyles.iconButton} onPress={() => handleRemoveProduct(item.codigo)}>
-                        <Text style={currentStyles.iconText}>❌</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={currentStyles.iconButton}>
-                        <Text style={currentStyles.iconText}>ℹ️</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    };
-
-const handleSellProducts = async () => {
-    try {
-        const sellRequests = addedProducts.map(product => {
-            const updatedQuantity = product.cantidad - product.cantidad_vendida;
-            return axios.put(`http://190.114.252.218:8000/api/inventarios/${product.codigo}/`, {
-                cantidad: updatedQuantity // Actualiza la cantidad en la base de datos
-            });
-        });
-
-        await Promise.all(sellRequests); // Espera que todas las actualizaciones se completen
-        Alert.alert('Éxito', 'Venta realizada y base de datos actualizada');
-        setAddedProducts([]); // Limpia los productos añadidos después de la venta
-        setTotal(0); // Reinicia el total
-    } catch (error) {
-        Alert.alert('Error', 'No se pudo realizar la venta.');
-    }
+        return product;
+    });
+    setAddedProducts(updatedProducts);
 };
-return (
-    <View style={currentStyles.container}>
-        <StatusBar barStyle="light-content" />
-        <View style={currentStyles.searchSection}>
-            <TextInput
-                style={currentStyles.searchInput}
-                placeholder="Buscar por código"
-                placeholderTextColor={isDarkMode ? "#506D8A" : "#808080"}
-                value={searchCodigo}
-                onChangeText={setSearchCodigo}
-            />
-            <TextInput
-                style={currentStyles.quantityInput}
-                keyboardType="numeric"
-                placeholder="Cantidad"  // Se mostrará el placeholder cuando esté vacío
-                value={quantityToAdd !== '' && !isNaN(quantityToAdd) ? String(quantityToAdd) : ''}  // Si está vacío o NaN, se muestra vacío
-                onChangeText={(value) => setQuantityToAdd(value === '' ? '' : parseInt(value))}  // Si está vacío, no convertir a número
-            />
-            <TouchableOpacity style={currentStyles.scanButton} onPress={() => handleAddProduct(searchCodigo)}>
-                <Text style={currentStyles.scanButtonText}>Agregar</Text>
-            </TouchableOpacity>
-        </View>
 
-        {/* Lista de productos añadidos */}
-        <FlatList
-            data={addedProducts}
-            keyExtractor={(item) => String(item.codigo)}
-            renderItem={renderProduct}
-        />
+    if (hasPermission === null) {
+        return <Text>Solicitando permiso de cámara...</Text>;
+    }
 
-        <View style={currentStyles.totalSection}>
-            <Text style={currentStyles.totalText}>Total</Text>
-            <Text style={currentStyles.totalAmount}>{`$${total.toFixed(2)}`}</Text>
-        </View>
+    if (hasPermission === false) {
+        return <Text>No se ha concedido acceso a la cámara.</Text>;
+    }
 
-        {/* Botón para realizar la venta */}
-        <View style={currentStyles.actionButtons}>
-            <TouchableOpacity style={currentStyles.sellButton} onPress={handleSellProducts}>
-                <Text style={currentStyles.sellText}>Vender</Text>
-            </TouchableOpacity>
+    const renderProduct = ({ item }) => {
+      const product = addedProducts.find(p => p.codigo === item.codigo);
+      const quantity = product ? product.cantidad : 1; // Cambia esto si quieres manejar la cantidad de otra forma
+  
+      return (
+          <View style={currentStyles.productRow}>
+              <Text style={currentStyles.productText}>{item.nombre_producto ? String(item.nombre_producto) : ''}</Text>
+              <Text style={currentStyles.productText}>{item.precio_venta_final ? `$${item.precio_venta_final.toFixed(2)}` : ''}</Text>
+              <View style={currentStyles.quantityContainer}>
+                  <TouchableOpacity
+                      style={currentStyles.quantityButton}
+                      onPress={() => decrementQuantity(item.codigo)} // Cambia aquí para llamar a decrementQuantity
+                      disabled={quantity <= 1} // Desactiva si la cantidad es 1
+                  >
+                      <Text style={currentStyles.buttonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={currentStyles.quantityText}>{quantity}</Text>
+                  <TouchableOpacity
+                      style={currentStyles.quantityButton}
+                      onPress={() => incrementQuantity(item.codigo)} // Cambia aquí para llamar a incrementQuantity
+                      disabled={quantity >= item.cantidad} // Desactiva si alcanza el límite
+                  >
+                      <Text style={currentStyles.buttonText}>+</Text>
+                  </TouchableOpacity>
+              </View>
+              <View style={currentStyles.productActions}>
+                  <TouchableOpacity style={currentStyles.iconButton} onPress={() => handleRemoveProduct(item.codigo)}>
+                      <Text style={currentStyles.iconText}>❌</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={currentStyles.iconButton}>
+                      <Text style={currentStyles.iconText}>ℹ️</Text>
+                  </TouchableOpacity>
+              </View>
+          </View>
+      );
+  };
+
+    return (
+        <View style={currentStyles.container}>
+            <StatusBar barStyle="light-content" />
+            <View style={currentStyles.searchSection}>
+                <TextInput
+                    style={currentStyles.searchInput}
+                    placeholder="Buscar por código"
+                    placeholderTextColor={isDarkMode ? "#506D8A" : "#FFF"}
+                    value={searchCodigo}
+                    onChangeText={setSearchCodigo}
+                />
+                <TouchableOpacity style={currentStyles.scanButton} onPress={() => handleAddProduct(searchCodigo)}>
+                    <Text style={currentStyles.scanButtonText}>Agregar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={currentStyles.scanButton} onPress={() => setScanning(true)}>
+                    <Text style={currentStyles.scanButtonText}>QR</Text>
+                </TouchableOpacity>
+            </View>
+            {scanning && (
+                <Modal visible={scanning} animationType="slide">
+                    <View style={currentStyles.modalContainer}>
+                        <View style={currentStyles.cameraContainer}>
+                            <BarCodeScanner
+                                onBarCodeScanned={scanning ? handleBarCodeScanned : undefined}
+                                style={currentStyles.camera}
+                            />
+                        </View>
+                        <Button title="Cancelar" onPress={() => setScanning(false)} />
+                    </View>
+                </Modal>
+            )}
+            <View style={currentStyles.productTable}>
+                <View style={currentStyles.productHeader}>
+                    <Text style={currentStyles.headerText}>Producto</Text>
+                    <Text style={currentStyles.headerText}>Precio</Text>
+                    <Text style={currentStyles.headerText}>Cantidad</Text>
+                    <Text style={currentStyles.headerText}>Opciones</Text>
+                </View>
+                <FlatList
+                    data={addedProducts}
+                    keyExtractor={(item) => item.codigo ? String(item.codigo) : Math.random().toString()} // Asegúrate de que sea un string
+                    renderItem={renderProduct}
+                />
+            </View>
+            <View style={currentStyles.totalSection}>
+                <Text style={currentStyles.totalText}>Total</Text>
+                <Text style={currentStyles.totalAmount}>${total.toFixed(2)}</Text>
+            </View>
+            <View style={currentStyles.actionButtons}>
+                <TouchableOpacity style={currentStyles.cancelButton}>
+                    <Text style={currentStyles.cancelText}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={currentStyles.sellButton}>
+                    <Text style={currentStyles.sellText}>Vender</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-    </View>
-);
+    );
 }
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -275,23 +250,36 @@ const styles = StyleSheet.create({
     },
     productText: {
         flex: 1,
-        fontSize: 18, // Ajusta el tamaño del texto del producto
     },
-    // Ajuste para que los campos de cantidad y código tengan la misma altura
-    quantityInput: {
-        borderWidth: 1,
-        borderColor: '#DDD',
-        textAlign: 'center',
-        width: 50,
-        height: 40, // Misma altura que el código
-        fontSize: 16, // Tamaño ajustado
-    },
-    // Ajuste del espaciado entre Precio y Cantidad
+    // Otros estilos...
     quantityContainer: {
-        flexDirection: 'row',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between', // Espaciado entre botones y cantidad
+      width: 100, // Ajusta esto para limitar el espacio total ocupado
+    },
+    quantityButton: {
+        padding: 10, // Ajusta el padding para hacer el botón más compacto
+        justifyContent: 'center',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: 120, // Aumenta el ancho para separar precio y cantidad
+        backgroundColor: '#007BFF',
+        borderRadius: 5,
+        marginRight:10,
+    },
+    buttonText: {
+        color: '#FFF', // Color del texto del botón
+        fontSize: 20, // Tamaño del texto, puedes ajustarlo a tu preferencia
+        lineHeight: 20, // Asegura un buen espacio vertical
+    },
+    quantityText: {
+        marginHorizontal: 5, // Espaciado horizontal reducido
+        fontSize: 16,
+        width: 30, // Asegúrate de que este ancho no sea excesivo
+        textAlign: 'center', // Centra el texto
+    },
+    buttonText: {
+        color: '#FFF', // Color del texto del botón
+        fontSize: 5, // Tamaño de la fuente
     },
     productActions: {
         flexDirection: 'row',
@@ -310,7 +298,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#DDD',
         padding: 10,
-        height: 40, // Misma altura que la cantidad
         marginRight: 10,
     },
     scanButton: {
@@ -382,6 +369,8 @@ const styles = StyleSheet.create({
         height: '100%',
     },
 });
+
+
 const styles2 = StyleSheet.create({
     container: {
       flex: 1,
@@ -500,3 +489,4 @@ const styles2 = StyleSheet.create({
       flex: 1,
     },
   });
+  

@@ -6,6 +6,7 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState({
     codigo_vendedor: null,
     id_admin: null,
+    id_rol: null,
     nombre_usuario: '',
     nombre_empresa: '',
     email: '',

@@ -1,13 +1,76 @@
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from django.db import connection
+
+# class TableListView(APIView):
+#     def get(self, request):
+#         with connection.cursor() as cursor:
+#             cursor.execute("SHOW TABLES;")
+#             tables = cursor.fetchall()
+#         return Response({'tables': [table[0] for table in tables]})
+
+# class TableDataView(APIView):
+#     def get(self, request, table_name):
+#         with connection.cursor() as cursor:
+#             cursor.execute(f"SELECT * FROM {table_name};")
+#             rows = cursor.fetchall()
+#             columns = [col[0] for col in cursor.description]
+#         return Response({ 'table': table_name, 'data': [dict(zip(columns, row)) for row in rows] })
+
+
+#============================================= 
+
+# from rest_framework import viewsets
+# from .models import Categoria  # uno de los modelos generados
+# from .serializers import CategoriaSerializer
+
+# class CategoriaViewSet(viewsets.ModelViewSet):
+#     queryset = Categoria.objects.all()
+#     serializer_class = CategoriaSerializer
+# ====================================================
 import json
-from rest_framework import viewsets
-from .models import Usuario
-from .serializers import UsuarioSerializer
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from django.contrib.auth.hashers import check_password, make_password
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
-from .models import Categoria, DetalleVenta, FormaPago, HistorialProductos, Inventario, RolUser, Usuario, Vendedor, Venta
-from .serializers import CategoriaSerializer, DetalleVentaSerializer, FormaPagoSerializer, HistorialProductosSerializer, InventarioSerializer, RolUserSerializer, UsuarioSerializer, VendedorSerializer, VentaSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+from .models import (
+    AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions,
+    Categoria, DetalleVenta, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession,
+    FormaPago, HistorialProductos, Inventario, RolUser, Usuario, Vendedores, Ventas
+)
+from .serializers import (
+    AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer,
+    AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, CategoriaSerializer, DetalleVentaSerializer,
+    DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer,
+    FormaPagoSerializer, HistorialProductosSerializer, InventarioSerializer, RolUserSerializer, UsuarioSerializer,
+    VendedoresSerializer, VentasSerializer
+)
+
+class AuthGroupViewSet(viewsets.ModelViewSet):
+    queryset = AuthGroup.objects.all()
+    serializer_class = AuthGroupSerializer
+
+class AuthGroupPermissionsViewSet(viewsets.ModelViewSet):
+    queryset = AuthGroupPermissions.objects.all()
+    serializer_class = AuthGroupPermissionsSerializer
+
+class AuthPermissionViewSet(viewsets.ModelViewSet):
+    queryset = AuthPermission.objects.all()
+    serializer_class = AuthPermissionSerializer
+
+class AuthUserViewSet(viewsets.ModelViewSet):
+    queryset = AuthUser.objects.all()
+    serializer_class = AuthUserSerializer
+
+class AuthUserGroupsViewSet(viewsets.ModelViewSet):
+    queryset = AuthUserGroups.objects.all()
+    serializer_class = AuthUserGroupsSerializer
+
+class AuthUserUserPermissionsViewSet(viewsets.ModelViewSet):
+    queryset = AuthUserUserPermissions.objects.all()
+    serializer_class = AuthUserUserPermissionsSerializer
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
@@ -16,6 +79,22 @@ class CategoriaViewSet(viewsets.ModelViewSet):
 class DetalleVentaViewSet(viewsets.ModelViewSet):
     queryset = DetalleVenta.objects.all()
     serializer_class = DetalleVentaSerializer
+
+class DjangoAdminLogViewSet(viewsets.ModelViewSet):
+    queryset = DjangoAdminLog.objects.all()
+    serializer_class = DjangoAdminLogSerializer
+
+class DjangoContentTypeViewSet(viewsets.ModelViewSet):
+    queryset = DjangoContentType.objects.all()
+    serializer_class = DjangoContentTypeSerializer
+
+class DjangoMigrationsViewSet(viewsets.ModelViewSet):
+    queryset = DjangoMigrations.objects.all()
+    serializer_class = DjangoMigrationsSerializer
+
+class DjangoSessionViewSet(viewsets.ModelViewSet):
+    queryset = DjangoSession.objects.all()
+    serializer_class = DjangoSessionSerializer
 
 class FormaPagoViewSet(viewsets.ModelViewSet):
     queryset = FormaPago.objects.all()
@@ -37,13 +116,13 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
-class VendedorViewSet(viewsets.ModelViewSet):
-    queryset = Vendedor.objects.all()
-    serializer_class = VendedorSerializer
+class VendedoresViewSet(viewsets.ModelViewSet):
+    queryset = Vendedores.objects.all()
+    serializer_class = VendedoresSerializer
 
-class VentaViewSet(viewsets.ModelViewSet):
-    queryset = Venta.objects.all()
-    serializer_class = VentaSerializer
+class VentasViewSet(viewsets.ModelViewSet):
+    queryset = Ventas.objects.all()
+    serializer_class = VentasSerializer
 
 @csrf_exempt
 def login(request):
@@ -51,65 +130,80 @@ def login(request):
         data = json.loads(request.body)
         nombre = data.get('nombre_usuario')
         passw = data.get('password')
-
+	
         try:
             user = Usuario.objects.get(nombre_usuario=nombre)
-            if passw == user.password:  # Sin hashear
-                return JsonResponse({'message': 'Login successful role'}, status=200)
+            if passw == user.password:  
+                rdata = {'codigo_vendedor': int(user.codigo_vendedor),'id_admin': int(user.id_admin.codigo_vendedor),'id_rol': int(user.id_rol.id_rol),'nombre_empresa': str(user.nombre_empresa),'nombre_usuario': str(user.nombre_usuario),'email': str(user.email),'password': str(user.password), 'pin': str(user.pin)}
+                return JsonResponse(rdata, status=200)
             else:
                 return JsonResponse({'error': 'Invalid password'}, status=401)
         except Usuario.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
 
+from rest_framework import status
+
 @csrf_exempt
-def product_list(request):
-    if request.method == 'GET':
+def registrar_usuario(request):
+    if request.method == 'POST':
         try:
-            # Fetch all products
-            products = Inventario.objects.all().values(
-                'id_producto', 'nombre_producto', 'descripcion', 'precio_venta_final', 'cantidad', 'img'
-            )
+            # Cargamos los datos del cuerpo de la petici n
+            data = json.loads(request.body)
 
-            # Optionally build full image URLs (if images are stored on the server)
-            product_list = []
-            for product in products:
-                # Verifica que el campo 'imagen' no sea nulo o vacío
-                if product['img']:
-                    # Si 'imagen' es una URL válida o una ruta relativa, se convierte a URL absoluta
-                    product['img'] = request.build_absolute_uri(product['img'])
-                else:
-                    product['img'] = None  # Si no hay imagen, dejamos el campo como None o algún valor por defecto
+            # Asignamos id_rol = 1 para todos los usuarios
+            data['id_rol'] = 1
+            data['id_admin'] = None
+            # Inicializamos el serializer
+            usuario_serializer = UsuarioSerializer(data=data)
 
-                product_list.append(product)
+            # Validamos los datos
+            if usuario_serializer.is_valid():
+                # Guardamos el usuario sin asignar id_admin (el c digo vendedor es autoincremental)
+                usuario = usuario_serializer.save()
 
-            # Return product data as a JSON response
-            return JsonResponse(product_list, safe=False, status=200)
+                # Asignamos el id_admin igual al codigo_vendedor autoincrementado
+                
+                usuario.save()
 
+                # Devolvemos una respuesta exitosa
+                return JsonResponse(usuario_serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                # Si los datos no son v lidos, devolvemos los errores
+                return JsonResponse(usuario_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
-            # Devuelve un error detallado si ocurre una excepción
+            return JsonResponse({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return JsonResponse({'error': 'Metodo no permitido'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+@csrf_exempt
+def vendedores_login(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            rut = data.get('rut')
+            password = data.get('password')
+
+            # Attempt to find a vendedor with the provided RUT and password
+            vendedor = Vendedores.objects.get(rut=rut, contraseña=password)
+            # If found, return vendedor data (or adjust as needed for security)
+            return JsonResponse({
+                'id_vendedores': vendedor.id_vendedores,
+                'nombres': vendedor.nombres,
+                'nombre_empresa': vendedor.nombre_empresa
+            }, status=200)
+        except Vendedores.DoesNotExist:
+            return JsonResponse({'error': 'Invalid RUT or password'}, status=401)
+        except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
     else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+        return JsonResponse({'error': 'Metodo no permitido'}, status=405)
 
-@csrf_exempt
-def actualizar_stock(request):
-    if request.method == 'POST':
-        id_producto = request.POST.get('id_producto')
-        cantidad_vendida = int(request.POST.get('cantidad_vendida', 0))
 
-        try:
-            producto = Inventario.objects.get(id_producto=id_producto)
-            if producto.cantidad >= cantidad_vendida:
-                producto.cantidad -= cantidad_vendida
-                producto.save()
-                return JsonResponse({
-                    'message': 'Stock actualizado',
-                    'producto': producto.nombre_producto,
-                    'cantidad': producto.cantidad,
-                    'precio_venta_final': producto.precio_venta_final
-                })
-            else:
-                return JsonResponse({'error': 'No hay suficiente stock'}, status=400)
-        except Inventario.DoesNotExist:
-            return JsonResponse({'error': 'Producto no encontrado'}, status=404)
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
+class InventarioListView(APIView):
+    def get(self, request, *args, **kwargs):
+        nombre_empresa = request.query_params.get('nombre_empresa')
+        if not nombre_empresa:
+            return Response({"error": "nombre_empresa is required in the query parameters."}, status=400)
+        inventario_items = Inventario.objects.filter(id_empresa=0)
+        serializer = InventarioSerializer(inventario_items, many=True)
+        return Response(serializer.data)

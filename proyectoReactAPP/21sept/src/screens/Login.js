@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useUser } from '../components/UserContext';
-import { ThemeContext } from '../../ThemeContext';
 import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
 import { useFonts } from 'expo-font';
 export default function Login({ navigation }) {
-  const [isRegistering, setIsRegistering] = useState(false); // Controla si es login o registro
+  const [isRegistering, setIsRegistering] = useState(false); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [nombreEmpresa, setNombreEmpresa] = useState('');
   const [email, setEmail] = useState('');
   const [pin, setPin] = useState('');
-    const { setUser } = useUser();
+  const [rut, setRut] = useState('');
+  const [secondaryPassword, setSecondaryPassword] = useState('');
+  const [isSecondLoginRequired, setIsSecondLoginRequired] = useState(false);
+  const { setUser } = useUser();
     const [fontsLoaded] = useFonts({
         'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
         'Roboto-Bold': require('../../assets/fonts/Roboto-Bold.ttf'),
@@ -50,13 +52,18 @@ export default function Login({ navigation }) {
                id_admin: data.id_admin, // Asume que el backend devuelve el id_admin
                nombre_empresa: data.nombre_empresa,
                nombre_usuario: data.nombre_usuario,
+               id_rol: data.id_rol,
                email: data.email,
                password: data.password,
                pin: data.pin,
              });
 
              Alert.alert('Success', 'Login successful');
-             navigation.navigate('Inicio');
+                if (data.id_rol === 2) {
+                    setIsSecondLoginRequired(true);
+                }
+                else{
+             navigation.navigate('Inicio');}
            } else {
         Alert.alert('Error', data.error || 'Login failed');
       }
@@ -64,7 +71,26 @@ export default function Login({ navigation }) {
       Alert.alert('Error', 'Something went wrong');
     }
   };
+  const handleSecondLogin = async () => {
+    try {
+      const response = await fetch('http://190.114.252.218:8000/api/vendedoreslog/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rut: rut, password: secondaryPassword }),
+      });
+      const data = await response.json();
 
+      if (response.ok) {
+        setIsSecondLoginRequired(false);  // Hide the modal after successful validation
+        Alert.alert('Success', 'Welcome, Vendedor!');
+        navigation.navigate('Inicio');
+      } else {
+        Alert.alert('Error', data.error || 'Validation failed');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Something went wrong');
+    }
+  };
   // Función para registrar usuario
   const handleRegister = async () => {
     try {
@@ -88,9 +114,6 @@ export default function Login({ navigation }) {
       if (response.ok) {
 
         const newUserId = data.codigo_vendedor;
-        // El ID autogenerado del usuario
-        // Hacer una segunda llamada para actualizar el id_admin con el mismo id del usuario
-
         const updateResponse = await fetch(`http://190.114.252.218:8000/api/usuarios/${newUserId}/`, {
           method: 'PATCH',
           headers: {
@@ -236,6 +259,15 @@ export default function Login({ navigation }) {
           </>
         )}
       </View>
+      <Modal visible={isSecondLoginRequired} transparent={true}>
+        <View style={styles.modalContainer}>
+          <TextInput placeholder="RUT" value={rut} onChangeText={setRut} />
+          <TextInput placeholder="Secondary Password" value={secondaryPassword} onChangeText={setSecondaryPassword} secureTextEntry />
+          <TouchableOpacity onPress={handleSecondLogin}>
+            <Text>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -248,6 +280,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
+  modalContainer: { flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 20 },
   title: {
     fontSize: 48,
     fontWeight: 'bold',
