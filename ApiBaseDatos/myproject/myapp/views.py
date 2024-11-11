@@ -30,42 +30,44 @@
 # ====================================================
 
 from rest_framework import viewsets
-from .models import (
-    AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions,
-    Categoria, DetalleVenta, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession,
-    FormaPago, HistorialProductos, Inventario, RolUser, Usuario, Vendedores, Ventas
-)
-from .serializers import (
-    AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer,
-    AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, CategoriaSerializer, DetalleVentaSerializer,
-    DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer,
-    FormaPagoSerializer, HistorialProductosSerializer, InventarioSerializer, RolUserSerializer, UsuarioSerializer,
-    VendedoresSerializer, VentasSerializer
-)
+# from .models import (
+#     AuthGroup, AuthGroupPermissions, AuthPermission, AuthUser, AuthUserGroups, AuthUserUserPermissions,
+#     Categoria, DetalleVenta, DjangoAdminLog, DjangoContentType, DjangoMigrations, DjangoSession,
+#     FormaPago, HistorialProductos, Inventario, RolUser, Usuario, Vendedores, Ventas
+# )
+# from .serializers import (
+#     AuthGroupSerializer, AuthGroupPermissionsSerializer, AuthPermissionSerializer, AuthUserSerializer,
+#     AuthUserGroupsSerializer, AuthUserUserPermissionsSerializer, CategoriaSerializer, DetalleVentaSerializer,
+#     DjangoAdminLogSerializer, DjangoContentTypeSerializer, DjangoMigrationsSerializer, DjangoSessionSerializer,
+#     FormaPagoSerializer, HistorialProductosSerializer, InventarioSerializer, RolUserSerializer, UsuarioSerializer,
+#     VendedoresSerializer, VentasSerializer
+# )
+from .models import *
+from .serializers import *
 
-class AuthGroupViewSet(viewsets.ModelViewSet):
-    queryset = AuthGroup.objects.all()
-    serializer_class = AuthGroupSerializer
+# class AuthGroupViewSet(viewsets.ModelViewSet):
+#     queryset = AuthGroup.objects.all()
+#     serializer_class = AuthGroupSerializer
 
-class AuthGroupPermissionsViewSet(viewsets.ModelViewSet):
-    queryset = AuthGroupPermissions.objects.all()
-    serializer_class = AuthGroupPermissionsSerializer
+# class AuthGroupPermissionsViewSet(viewsets.ModelViewSet):
+#     queryset = AuthGroupPermissions.objects.all()
+#     serializer_class = AuthGroupPermissionsSerializer
 
-class AuthPermissionViewSet(viewsets.ModelViewSet):
-    queryset = AuthPermission.objects.all()
-    serializer_class = AuthPermissionSerializer
+# class AuthPermissionViewSet(viewsets.ModelViewSet):
+#     queryset = AuthPermission.objects.all()
+#     serializer_class = AuthPermissionSerializer
 
-class AuthUserViewSet(viewsets.ModelViewSet):
-    queryset = AuthUser.objects.all()
-    serializer_class = AuthUserSerializer
+# class AuthUserViewSet(viewsets.ModelViewSet):
+#     queryset = AuthUser.objects.all()
+#     serializer_class = AuthUserSerializer
 
-class AuthUserGroupsViewSet(viewsets.ModelViewSet):
-    queryset = AuthUserGroups.objects.all()
-    serializer_class = AuthUserGroupsSerializer
+# class AuthUserGroupsViewSet(viewsets.ModelViewSet):
+#     queryset = AuthUserGroups.objects.all()
+#     serializer_class = AuthUserGroupsSerializer
 
-class AuthUserUserPermissionsViewSet(viewsets.ModelViewSet):
-    queryset = AuthUserUserPermissions.objects.all()
-    serializer_class = AuthUserUserPermissionsSerializer
+# class AuthUserUserPermissionsViewSet(viewsets.ModelViewSet):
+#     queryset = AuthUserUserPermissions.objects.all()
+#     serializer_class = AuthUserUserPermissionsSerializer
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
@@ -75,21 +77,21 @@ class DetalleVentaViewSet(viewsets.ModelViewSet):
     queryset = DetalleVenta.objects.all()
     serializer_class = DetalleVentaSerializer
 
-class DjangoAdminLogViewSet(viewsets.ModelViewSet):
-    queryset = DjangoAdminLog.objects.all()
-    serializer_class = DjangoAdminLogSerializer
+# class DjangoAdminLogViewSet(viewsets.ModelViewSet):
+#     queryset = DjangoAdminLog.objects.all()
+#     serializer_class = DjangoAdminLogSerializer
 
-class DjangoContentTypeViewSet(viewsets.ModelViewSet):
-    queryset = DjangoContentType.objects.all()
-    serializer_class = DjangoContentTypeSerializer
+# class DjangoContentTypeViewSet(viewsets.ModelViewSet):
+#     queryset = DjangoContentType.objects.all()
+#     serializer_class = DjangoContentTypeSerializer
 
-class DjangoMigrationsViewSet(viewsets.ModelViewSet):
-    queryset = DjangoMigrations.objects.all()
-    serializer_class = DjangoMigrationsSerializer
+# class DjangoMigrationsViewSet(viewsets.ModelViewSet):
+#     queryset = DjangoMigrations.objects.all()
+#     serializer_class = DjangoMigrationsSerializer
 
-class DjangoSessionViewSet(viewsets.ModelViewSet):
-    queryset = DjangoSession.objects.all()
-    serializer_class = DjangoSessionSerializer
+# class DjangoSessionViewSet(viewsets.ModelViewSet):
+#     queryset = DjangoSession.objects.all()
+#     serializer_class = DjangoSessionSerializer
 
 class FormaPagoViewSet(viewsets.ModelViewSet):
     queryset = FormaPago.objects.all()
@@ -111,9 +113,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
-class VendedoresViewSet(viewsets.ModelViewSet):
-    queryset = Vendedores.objects.all()
-    serializer_class = VendedoresSerializer
+# class VendedoresViewSet(viewsets.ModelViewSet):
+#     queryset = Vendedores.objects.all()
+#     serializer_class = VendedoresSerializer
 
 class VentasViewSet(viewsets.ModelViewSet):
     queryset = Ventas.objects.all()

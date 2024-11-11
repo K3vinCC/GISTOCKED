@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-0^ii)-$pm#4r8$q_$-d%&ww8x^mw5db2198wnkap@vd2cusn&=
 DEBUG = True
 
 # ALLOWED_HOSTS = ["192.168.1.10:8081" ] correr api -> python manage.py runserver 192.168.1.10:8000  o  python manage.py runserver <IpExpo>:8000
-ALLOWED_HOSTS = ['192.168.1.10']
+ALLOWED_HOSTS = ['192.168.1.10','127.0.0.1']
 
 # Application definition
 
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gistocked',
+        'NAME': 'gistocked_10nov',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',  # O la IP de tu servidor
