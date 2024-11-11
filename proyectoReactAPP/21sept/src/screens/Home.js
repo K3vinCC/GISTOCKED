@@ -5,10 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
 import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
 import { useFonts } from 'expo-font';
-
+import { useUser } from '../contexts/UserContext';
 const { width } = Dimensions.get('window');
 SplashScreen.preventAutoHideAsync();
 export default (props) => {
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user) {
+      Alert.alert('Error', 'No estás autenticado. Redirigiendo al inicio de sesión.');
+      navigation.navigate('Inicio sesion'); // Redirige si no está autenticado
+    }
+  }, [user, navigation]);
+
   const userRole = 'admin'; 
   const { isDarkMode } = useContext(ThemeContext);
   const navigation = useNavigation();

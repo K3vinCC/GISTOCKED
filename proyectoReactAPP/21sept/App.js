@@ -17,7 +17,7 @@ import AgregarUsuario from './src/screens/agregarUsuario';
 
 import { enableScreens } from 'react-native-screens';
 import 'react-native-safe-area-context';
-
+import { useUser } from './contexts/UserContext';
 import Header1 from './src/components/header1';
 import { ThemeProvider} from './ThemeContext';
 import { useFonts } from 'expo-font';  
@@ -25,6 +25,7 @@ import { useFonts } from 'expo-font';
 const Stack = createStackNavigator();
 enableScreens();
 const App = () => {
+  const { user } = useUser();
   const [fontsLoaded] = useFonts({
     'Roboto-Medium': require('./assets/fonts/Roboto-Medium.ttf'),
     'Racing': require('./assets/fonts/RacingSansOne-Regular.ttf'),
@@ -49,30 +50,30 @@ const App = () => {
       <Stack.Navigator initialRouteName="Inicio Sesion">
         <Stack.Screen name="Inicio sesion" component={Login} options={{ headerShown: false
                                                                     }}/>
-        <Stack.Screen name="Inicio" component={Home} options={{ headerStyle: {
+        {user && (<Stack.Screen name="Inicio" component={Home} options={{ headerStyle: {
                                                                          backgroundColor: '#34495E',
                                                                       },
                                                                       headerTintColor: '#FFF',
                                                                       headerTitle: () => <Header1 />,
                                                                       
-                                                                      }}/>
-        <Stack.Screen name="Inicio1" component={Home1} options={{ headerStyle: {
+                                                                      }}/> )}
+        {user && (<Stack.Screen name="Inicio1" component={Home1} options={{ headerStyle: {
                                                                          backgroundColor: '#34495E'
                                                                       },
                                                                                  headerTintColor: '#FFF',
                                                                                  headerTitleStyle: {
-                                                                                    fontFamily: 'Racing'}}}/>
-        <Stack.Screen name="Opciones" component={Opciones} options={{ headerStyle: {
+                                                                                    fontFamily: 'Racing'}}}/>)}
+                                                                                    {user && (<Stack.Screen name="Opciones" component={Opciones} options={{ headerStyle: {
                                                                          backgroundColor: '#34495E'
                                                                       },
                                                                                  headerTintColor: '#FFF',
                                                                                  headerTitleStyle: {
-                                                                                    fontFamily: 'Racing'}}}/>
-        <Stack.Screen name="Inventario" component={Ginventario} />
-        <Stack.Screen name="Ainventario" component={Ainventario} />
-        <Stack.Screen name="Perfil" component={Perfil} />
-        <Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>
-        <Stack.Screen name="Ventas" component={ZVentas} />
+                                                                                    fontFamily: 'Racing'}}}/>)}
+        {user && (<Stack.Screen name="Inventario" component={Ginventario} />)}
+        {user && (<Stack.Screen name="Ainventario" component={Ainventario} />)}
+        {user && (<Stack.Screen name="Perfil" component={Perfil} />)}
+        {user && (<Stack.Screen name='AgregarUsuarios' component={AgregarUsuario}/>)}
+                {user && (<Stack.Screen name="Ventas" component={ZVentas} />)}
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>
