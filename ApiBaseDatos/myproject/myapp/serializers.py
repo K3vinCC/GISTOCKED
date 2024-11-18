@@ -49,9 +49,24 @@ class CategoriaSerializer(serializers.ModelSerializer):
         model = Categoria
         fields = '__all__'
 
-class DetalleVentaSerializer(serializers.ModelSerializer):
+# class DetalleVentaGeneralSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = VentaGeneral
+#         fields = '__all__'
+        
+# class DetalleVentaProductoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = VentaProducto
+#         fields = '__all__'
+class VentaGeneralSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DetalleVenta
+        model = VentaGeneral
+        fields = '__all__'
+
+
+class VentaProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VentaProducto
         fields = '__all__'
 
 # class DjangoAdminLogSerializer(serializers.ModelSerializer):
@@ -81,7 +96,7 @@ class FormaPagoSerializer(serializers.ModelSerializer):
 
 class HistorialProductosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = HistorialProductos
+        model = HistorialProducto
         fields = '__all__'
 
 class InventarioSerializer(serializers.ModelSerializer):
@@ -104,7 +119,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 #         model = Vendedores
 #         fields = '__all__'
 
-class VentasSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ventas
-        fields = '__all__'
+# class VentasSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Ventas
+#         fields = '__all__'
