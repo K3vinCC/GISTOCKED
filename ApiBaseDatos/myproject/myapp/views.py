@@ -140,18 +140,22 @@ class VentaProductoViewSet(viewsets.ModelViewSet):
     queryset = VentaProducto.objects.all()
     serializer_class = VentaProductoSerializer
 
+class EmpresaViewset(viewsets.ModelViewSet):
+    queryset = Empresa.objects.all()
+    serializer_class = EmpresaSerializer
+    
 
 @csrf_exempt
 def login(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        nombre = data.get('nombre_usuario')
+        nombre = data.get('Email')
         passw = data.get('password')
 	
         try:
-            user = Usuario.objects.get(nombre_usuario=nombre)
+            user = Usuario.objects.get(Email=nombre)
             if passw == user.password:  
-                rdata = {'codigo_vendedor': str(user.codigo_vendedor),'id_rol': int(user.id_rol.id_rol),'nombre_empresa': str(user.nombre_empresa),'nombre_usuario': str(user.nombre_usuario),'email': str(user.email),'password': str(user.password)}
+                rdata = {'codigo_vendedor': str(user.codigo_vendedor),'id_rol': int(user.id_rol.id_rol), 'email': str(user.Email),'password': str(user.password)}
                 return JsonResponse(rdata, status=200)
             else:
                 return JsonResponse({'error': 'Invalid password'}, status=401)

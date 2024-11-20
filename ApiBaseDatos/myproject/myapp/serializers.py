@@ -114,6 +114,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = '__all__'
 
+class EmpresaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empresa
+        fields = '__all__'
+
 # class VendedoresSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Vendedores

@@ -50,6 +50,7 @@ router.register(r'historial-productos', views.HistorialProductosViewSet)
 router.register(r'inventarios', views.InventarioViewSet)
 router.register(r'rol-users', views.RolUserViewSet)
 router.register(r'usuarios', views.UsuarioViewSet)
+router.register(r'empresas', views.EmpresaViewset)
 # router.register(r'vendedores', views.VendedoresViewSet)
 
 # urlpatterns = router.urls
