@@ -1,131 +1,73 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
-# from django.db import models
-
-
-# class Categoria(models.Model):
-#     id_categoria = models.AutoField(primary_key=True)
-#     nombre_categoria = models.CharField(max_length=50)
-#     id_empresa = models.ForeignKey('Empresa', models.DO_NOTHING, db_column='id_empresa')
-
-#     class Meta:
-#         db_table = 'categoria'
-
-
-# class DetalleVenta(models.Model):
-#     id_detalle_venta = models.AutoField(primary_key=True)
-#     id_venta = models.ForeignKey('Ventas', models.DO_NOTHING, db_column='id_venta')
-#     id_producto = models.ForeignKey('Inventario', models.DO_NOTHING, db_column='id_producto')
-#     cantidad = models.IntegerField()
-#     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
-#     precio_total = models.DecimalField(max_digits=10, decimal_places=2)
-#     id_empresa = models.ForeignKey('Empresa', models.DO_NOTHING, db_column='id_empresa')
-#     nombre_producto = models.CharField(max_length=100)
-
-#     class Meta:
-#         db_table = 'detalle_venta'
-
-
-# class Empresa(models.Model):
-#     id_empresa = models.AutoField(primary_key=True)
-#     nombre_empresa = models.CharField(max_length=100)
-
-#     class Meta:
-#         db_table = 'empresa'
-
-
-# class FormaPago(models.Model):
-#     id_forma_pago = models.AutoField(primary_key=True)
-#     nombre_forma = models.CharField(max_length=50)
-
-#     class Meta:
-#         db_table = 'forma_pago'
-
-
-# class HistorialProductos(models.Model):
-#     id_historial = models.AutoField(primary_key=True)
-#     id_producto = models.IntegerField(blank=True, null=True)
-#     accion = models.CharField(max_length=8)
-#     fecha_modificacion = models.DateTimeField()
-#     detalles_modificacion = models.TextField(blank=True, null=True)
-#     id_usuario = models.IntegerField()
-#     nombre_producto = models.CharField(max_length=255, blank=True, null=True)
-#     descripcion = models.TextField(blank=True, null=True)
-#     precio_compra = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-#     precio_neto = models.DecimalField(max_digits=10, decimal_places=2)
-#     precio_venta = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-#     precio_venta_final = models.DecimalField(max_digits=10, decimal_places=2)
-#     cantidad = models.IntegerField(blank=True, null=True)
-#     id_empresa = models.IntegerField()
-#     descuento = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-#     precio_descuento = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-#     porcentaje_ganancia = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-
-#     class Meta:
-#         db_table = 'historial_productos'
-
-
-# class Inventario(models.Model):
-#     id_producto = models.AutoField(primary_key=True)
-#     img = models.TextField(blank=True, null=True)
-#     nombre_producto = models.CharField(max_length=100, blank=True, null=True)
-#     descripcion = models.CharField(max_length=100)
-#     precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
-#     porcentaje_de_ganancia = models.DecimalField(max_digits=5, decimal_places=2)
-#     precio_neto = models.DecimalField(max_digits=10, decimal_places=2)
-#     precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
-#     precio_venta_final = models.DecimalField(max_digits=10, decimal_places=2)
-#     codigo = models.IntegerField()
-#     id_categoria = models.IntegerField()
-#     descuento = models.IntegerField()
-#     precio_descuento = models.FloatField()
-#     cantidad = models.IntegerField(blank=True, null=True)
-#     id_empresa = models.IntegerField()
-
-#     class Meta:
-#         db_table = 'inventario'
-
-
-# class RolUser(models.Model):
-#     id_rol = models.AutoField(primary_key=True)
-#     nombre_rol = models.CharField(max_length=50)
-
-#     class Meta:
-#         db_table = 'rol_user'
-
-
-# class Usuario(models.Model):
-#     codigo_vendedor = models.CharField(primary_key=True, max_length=255)
-#     nombre_usuario = models.CharField(max_length=100)
-#     nombre_empresa = models.CharField(max_length=100)
-#     password = models.CharField(max_length=255)
-#     email = models.CharField(unique=True, max_length=100)
-#     id_rol = models.ForeignKey(RolUser, models.DO_NOTHING, db_column='id_rol')
-#     id_admin = models.IntegerField(blank=True, null=True)
-
-#     class Meta:
-#         db_table = 'usuario'
-
-
-# class Ventas(models.Model):
-#     id_venta = models.AutoField(primary_key=True)
-#     codigo_vendedor = models.CharField(unique=True, max_length=255, blank=True, null=True)
-#     id_producto = models.IntegerField(blank=True, null=True)
-#     fecha_venta = models.DateField(blank=True, null=True)
-#     id_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='id_empresa', blank=True, null=True)
-#     total = models.IntegerField()
-
-#     class Meta:
-#         db_table = 'ventas'
-
-
-###########################
 from django.db import models
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
 
 
 class Categoria(models.Model):
@@ -134,7 +76,53 @@ class Categoria(models.Model):
     id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'categoria'
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
 
 
 class Empresa(models.Model):
@@ -142,6 +130,7 @@ class Empresa(models.Model):
     nombre_empresa = models.CharField(db_column='Nombre_empresa', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'empresa'
 
 
@@ -150,6 +139,7 @@ class FormaPago(models.Model):
     metodo = models.CharField(db_column='Metodo', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'forma_pago'
 
 
@@ -175,27 +165,29 @@ class HistorialProducto(models.Model):
     id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'historial_producto'
 
 
 class Inventario(models.Model):
-    id_producto = models.IntegerField(db_column='Id_producto', blank=True, null=True)  # Field name made lowercase.
-    img = models.IntegerField(db_column='Img', blank=True, null=True)  # Field name made lowercase.
-    nombre_producto = models.CharField(db_column='Nombre_producto', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    descripcion = models.CharField(db_column='Descripcion', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    cantidad = models.FloatField(db_column='Cantidad', blank=True, null=True)  # Field name made lowercase.
-    precio_compra = models.FloatField(db_column='Precio_compra', blank=True, null=True)  # Field name made lowercase.
-    porcentaje_de_ganancia = models.FloatField(db_column='Porcentaje_de_ganancia', blank=True, null=True)  # Field name made lowercase.
-    precio_neto = models.FloatField(db_column='Precio_neto', blank=True, null=True)  # Field name made lowercase.
-    precio_venta = models.FloatField(db_column='Precio_venta', blank=True, null=True)  # Field name made lowercase.
-    precio_venta_final = models.CharField(db_column='Precio_venta_final', max_length=100, blank=True, null=True)  # Field name made lowercase.
-    codigo = models.IntegerField(db_column='Codigo', blank=True, null=True)  # Field name made lowercase.
-    id_categoria = models.FloatField(db_column='Id_categoria', blank=True, null=True)  # Field name made lowercase.
-    descuento = models.FloatField(db_column='Descuento', blank=True, null=True)  # Field name made lowercase.
-    precio_descuento = models.FloatField(db_column='Precio_descuento', blank=True, null=True)  # Field name made lowercase.
-    id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
+    id_producto = models.IntegerField(primary_key=True)
+    img = models.CharField(max_length=300, blank=True, null=True)
+    nombre_producto = models.CharField(max_length=200, blank=True, null=True)
+    descripcion = models.CharField(max_length=500, blank=True, null=True)
+    cantidad = models.FloatField(blank=True, null=True)
+    precio_compra = models.IntegerField(blank=True, null=True)
+    porcentaje_de_ganancia = models.FloatField(blank=True, null=True)
+    precio_neto = models.IntegerField(blank=True, null=True)
+    precio_venta = models.IntegerField(blank=True, null=True)
+    precio_venta_final = models.IntegerField(blank=True, null=True)
+    codigo_barra = models.IntegerField(blank=True, null=True)
+    id_categoria = models.IntegerField(blank=True, null=True)
+    descuento = models.FloatField(blank=True, null=True)
+    precio_descuento = models.IntegerField(blank=True, null=True)
+    id_empresa = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'inventario'
 
 
@@ -204,6 +196,7 @@ class RolUser(models.Model):
     nombre_rol = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
+        managed = False
         db_table = 'rol_user'
 
 
@@ -215,6 +208,7 @@ class Usuario(models.Model):
     id_rol = models.IntegerField(db_column='Id_rol', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'usuario'
 
 
@@ -226,6 +220,7 @@ class VentaGeneral(models.Model):
     fecha_venta = models.DateTimeField(db_column='Fecha_venta', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'venta_general'
 
 
@@ -240,4 +235,5 @@ class VentaProducto(models.Model):
     precio_unitario = models.FloatField(db_column='Precio_unitario', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
+        managed = False
         db_table = 'venta_producto'
