@@ -28,25 +28,11 @@ export default function AgregarUsuario() {
   const { user } = useUser(); // Obtener el contexto de usuario
   const handleAgregarUsuario = async () => {
       try {
-        if (rol === '1') { // Admin
           await axios.post('http://190.114.252.218:8000/api/usuarios/', {
-            nombre_usuario: nombreUsuario,
             password: password,
             email: email,
             id_rol: 1,
-            pin: pin,
-            nombre_empresa: user.nombre_empresa, // Usar el nombre de la empresa del contexto
           });
-        } else if (rol === '2') { // Vendedor
-          await axios.post('http://190.114.252.218:8000/api/vendedores/', {
-            nombres: nombreUsuario,
-            apellidos: 'a',
-            rut: rut,
-            contraseña: password,
-            nombre_empresa: user.nombre_empresa, // Usar el nombre de la empresa del contexto
-            id_admin: user.id_admin, // Usar el id_admin del contexto
-          });
-        }
         Alert.alert('Éxito', 'Usuario agregado correctamente');
       } catch (error) {
          console.error(error); // Muestra el error en la consola
@@ -71,12 +57,12 @@ export default function AgregarUsuario() {
       </Picker>
 
       {/* Formulario común para Admin y Vendedor */}
-      <TextInput
-        placeholder="Nombre de Usuario"
-        style={currentStyles.input}
-        value={nombreUsuario}
-        onChangeText={setNombreUsuario}
-      />
+        <TextInput
+            placeholder="Email"
+            style={currentStyles.input}
+            value={email}
+            onChangeText={setEmail}
+          />
       <TextInput
         placeholder="Contraseña"
         style={currentStyles.input}
@@ -84,33 +70,6 @@ export default function AgregarUsuario() {
         value={password}
         onChangeText={setPassword}
       />
-      {rol === '1' && (
-        <>
-          <TextInput
-            placeholder="Email"
-            style={currentStyles.input}
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            placeholder="PIN"
-            style={currentStyles.input}
-            value={pin}
-            onChangeText={setPin}
-          />
-        </>
-      )}
-      {rol === '2' && (
-        <>
-          <TextInput
-            placeholder="RUT"
-            style={currentStyles.input}
-            value={rut}
-            onChangeText={setRut}
-          />
-        </>
-      )}
-
       <TouchableOpacity style={currentStyles.addButton} onPress={handleAgregarUsuario}>
         <Text style={currentStyles.buttonText}>Agregar Usuario</Text>
       </TouchableOpacity>

@@ -32,7 +32,7 @@ export default function App() {
         // Solicitud para obtener productos de la base de datos al montar el componente
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.nombre_empresa}/`); // Cambia la URL según tu backend
+                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.id_empresa}/`); // Cambia la URL según tu backend
                 console.log('Productos recibidos:', response.data); // Log de productos recibidos
                 setProducts(response.data);
             } catch (error) {

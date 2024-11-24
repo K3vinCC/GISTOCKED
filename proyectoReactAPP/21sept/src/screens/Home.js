@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
 import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
 import { useFonts } from 'expo-font';
-import { useUser } from '../contexts/UserContext';
+import { useUser } from '../components/UserContext';
 const { width } = Dimensions.get('window');
 SplashScreen.preventAutoHideAsync();
 export default (props) => {
@@ -88,7 +88,7 @@ export default (props) => {
           </TouchableOpacity>
         </View>
 			<View style={currentStyles.row2}>
-      <TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+      <TouchableOpacity onPress={() => navigation.navigate('GProducto')}>
           	<View style={currentStyles.column}>
 		  	
 			<Image

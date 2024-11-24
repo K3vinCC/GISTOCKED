@@ -72,18 +72,14 @@ export default function ProfileScreen() {
 
     try {
       const response = await axios.put(`http://190.114.252.218:8000/api/usuarios/${user.codigo_vendedor}/`, {
-        nombre_usuario: name,
-        nombre_empresa: phone,
         email: email,
         password: password,
         id_rol: 1,
-        pin: "4567",
+
       });
 
       setUser({
         ...user,
-        nombre_usuario: name,
-        nombre_empresa: phone,
         email: email,
         password: password,
       });

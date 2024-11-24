@@ -54,7 +54,7 @@ export default function App() {
         // Función para obtener productos desde la API
         const fetchProducts = async () => {
             try {
-                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.nombre_empresa}/`);
+                const response = await axios.get(`http://190.114.252.218:8000/api/inventario?nombre_empresa=${user.id_empresa}/`);
                 setData(response.data); // Asigna los productos obtenidos a data
             } catch (error) {
                 console.error(error);
