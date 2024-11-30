@@ -9,6 +9,7 @@ export const UserProvider = ({ children }) => {
     email: '',
     password: '',
     id_empresa: null,
+    nombre_empresa: '',
   });
 
   return (

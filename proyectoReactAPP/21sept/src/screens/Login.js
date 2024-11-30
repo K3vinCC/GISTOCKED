@@ -44,6 +44,7 @@ export default function Login({ navigation }) {
           email: data.email,
           id_rol: 1,
           id_empresa: data.id_empresa,
+          nombre_empresa: data.empresa,
         });
 
         Alert.alert('Success', 'Login successful');
