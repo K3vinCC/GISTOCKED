@@ -5,10 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../../ThemeContext';
 import * as SplashScreen from 'expo-splash-screen'; // Importamos SplashScreen
 import { useFonts } from 'expo-font';
-
+import { useUser } from '../components/UserContext';
 const { width } = Dimensions.get('window');
 SplashScreen.preventAutoHideAsync();
 export default (props) => {
+  const { user } = useUser();
+
+  useEffect(() => {
+    if (!user) {
+      Alert.alert('Error', 'No estás autenticado. Redirigiendo al inicio de sesión.');
+      navigation.navigate('Inicio sesion'); // Redirige si no está autenticado
+    }
+  }, [user, navigation]);
+
   const userRole = 'admin'; 
   const { isDarkMode } = useContext(ThemeContext);
   const navigation = useNavigation();
@@ -47,7 +56,7 @@ export default (props) => {
     <SafeAreaView style={currentStyles.container}>
       <ScrollView contentContainerStyle={currentStyles.scrollView}>
         <View style={currentStyles.row2}>
-          <TouchableOpacity onPress={() => navigation.navigate('inventario')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Inventario')}>
             <View style={currentStyles.column}>
               <Image
                 source={require('../../assets/INICIO/inventario.png')}
@@ -79,7 +88,7 @@ export default (props) => {
           </TouchableOpacity>
         </View>
 			<View style={currentStyles.row2}>
-      <TouchableOpacity onPress={() => navigation.navigate('Ainventario')}>
+      <TouchableOpacity onPress={() => navigation.navigate('GProducto')}>
           	<View style={currentStyles.column}>
 		  	
 			<Image

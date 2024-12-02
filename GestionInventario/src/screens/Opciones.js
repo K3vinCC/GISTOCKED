@@ -41,7 +41,7 @@ export default (props) => {
 						style={currentStyles.image3}
 					/>
 					<Text style={currentStyles.text2}>
-						{"Parametros"}
+						{"Modo Oscuro"}
 					</Text>
 				</View>
 				</TouchableOpacity>

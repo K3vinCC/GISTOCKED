@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bddos',
+        'NAME': 'bdtres',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',  # O la IP de tu servidor

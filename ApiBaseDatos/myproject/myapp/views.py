@@ -9,50 +9,42 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 
+
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
+
+class EmpresaViewSet(viewsets.ModelViewSet):
+    queryset = Empresa.objects.all()
+    serializer_class = EmpresaSerializer
 
 class FormaPagoViewSet(viewsets.ModelViewSet):
     queryset = FormaPago.objects.all()
     serializer_class = FormaPagoSerializer
 
-
-class HistorialProductosViewSet(viewsets.ModelViewSet):
+class HistorialProductoViewSet(viewsets.ModelViewSet):
     queryset = HistorialProducto.objects.all()
-    serializer_class = HistorialProductosSerializer
-
+    serializer_class = HistorialProductoSerializer
 
 class InventarioViewSet(viewsets.ModelViewSet):
     queryset = Inventario.objects.all()
     serializer_class = InventarioSerializer
 
-
-class RolUserViewSet(viewsets.ModelViewSet):
-    queryset = RolUser.objects.all()
-    serializer_class = RolUserSerializer
-
+class RolViewSet(viewsets.ModelViewSet):
+    queryset = Rol.objects.all()
+    serializer_class = RolSerializer
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
-
-
 class VentaGeneralViewSet(viewsets.ModelViewSet):
     queryset = VentaGeneral.objects.all()
     serializer_class = VentaGeneralSerializer
 
-
 class VentaProductoViewSet(viewsets.ModelViewSet):
     queryset = VentaProducto.objects.all()
     serializer_class = VentaProductoSerializer
-
-
-class EmpresaViewset(viewsets.ModelViewSet):
-    queryset = Empresa.objects.all()
-    serializer_class = EmpresaSerializer
-
 
 @csrf_exempt
 def login(request):

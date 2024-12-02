@@ -1,25 +1,14 @@
 from rest_framework import serializers
-
-from .models import *
+from .models import Categoria, Empresa, FormaPago, HistorialProducto, Inventario, Rol, Usuario, VentaGeneral, VentaProducto
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
         fields = '__all__'
 
-
-class VentaGeneralSerializer(serializers.ModelSerializer):
+class EmpresaSerializer(serializers.ModelSerializer):
     class Meta:
-        model = VentaGeneral
-        fields = '__all__'
-        extra_kwargs = {
-            'codigo_vendedor': {'required': True},  # Asegura que sea obligatorio
-        }
-
-
-class VentaProductoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = VentaProducto
+        model = Empresa
         fields = '__all__'
 
 class FormaPagoSerializer(serializers.ModelSerializer):
@@ -27,7 +16,7 @@ class FormaPagoSerializer(serializers.ModelSerializer):
         model = FormaPago
         fields = '__all__'
 
-class HistorialProductosSerializer(serializers.ModelSerializer):
+class HistorialProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistorialProducto
         fields = '__all__'
@@ -37,9 +26,24 @@ class InventarioSerializer(serializers.ModelSerializer):
         model = Inventario
         fields = '__all__'
 
-class RolUserSerializer(serializers.ModelSerializer):
+class RolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = RolUser
+        model = Rol
+        fields = '__all__'
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+
+class VentaGeneralSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VentaGeneral
+        fields = '__all__'
+
+class VentaProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VentaProducto
         fields = '__all__'
 
 # class UsuarioSerializer(serializers.ModelSerializer):
