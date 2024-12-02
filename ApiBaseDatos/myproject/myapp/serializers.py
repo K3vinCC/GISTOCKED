@@ -12,6 +12,9 @@ class VentaGeneralSerializer(serializers.ModelSerializer):
     class Meta:
         model = VentaGeneral
         fields = '__all__'
+        extra_kwargs = {
+            'codigo_vendedor': {'required': True},  # Asegura que sea obligatorio
+        }
 
 
 class VentaProductoSerializer(serializers.ModelSerializer):
@@ -39,10 +42,24 @@ class RolUserSerializer(serializers.ModelSerializer):
         model = RolUser
         fields = '__all__'
 
+# class UsuarioSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Usuario
+#         fields = '__all__'
+        
+from django.contrib.auth.hashers import make_password
+
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = '__all__'
+        fields = ['codigo_vendedor', 'id_empresa', 'email', 'password','codigo_de_confirmacion']
+
+    def create(self, validated_data):
+        # Asignar id_rol=1 por defecto
+        validated_data['id_rol'] = 1
+        # Encriptar la contraseña
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
 
 class EmpresaSerializer(serializers.ModelSerializer):
     class Meta:

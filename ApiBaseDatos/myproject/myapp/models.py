@@ -70,14 +70,6 @@ class AuthUserUserPermissions(models.Model):
         unique_together = (('user', 'permission'),)
 
 
-class Categoria(models.Model):
-    id_categoria = models.IntegerField(db_column='Id_categoria', primary_key=True)  # Field name made lowercase.
-    nombre_categoria = models.CharField(db_column='Nombre_categoria', max_length=500, blank=True, null=True)  # Field name made lowercase.
-    id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'categoria'
 
 
 class DjangoAdminLog(models.Model):
@@ -125,26 +117,32 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+class Categoria(models.Model):
+    id_categoria = models.AutoField(db_column='Id_categoria', primary_key=True)  # Field name made lowercase.
+    nombre_categoria = models.CharField(db_column='Nombre_categoria', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        db_table = 'categoria'
+
 class Empresa(models.Model):
-    id_empresa = models.IntegerField(db_column='Id_empresa', primary_key=True)  # Field name made lowercase.
+    id_empresa = models.AutoField(db_column='Id_empresa', primary_key=True)  # Field name made lowercase.
     nombre_empresa = models.CharField(db_column='Nombre_empresa', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'empresa'
 
 
 class FormaPago(models.Model):
-    id_forma_pago = models.IntegerField(db_column='Id_forma_pago', primary_key=True)  # Field name made lowercase.
+    id_forma_pago = models.AutoField(db_column='Id_forma_pago', primary_key=True)  # Field name made lowercase.
     metodo = models.CharField(db_column='Metodo', max_length=200, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'forma_pago'
 
 
 class HistorialProducto(models.Model):
-    id_historial = models.IntegerField(db_column='Id_historial', primary_key=True)  # Field name made lowercase.
+    id_historial = models.AutoField(db_column='Id_historial', primary_key=True)  # Field name made lowercase.
     id_producto = models.IntegerField(db_column='Id_producto', blank=True, null=True)  # Field name made lowercase.
     accion = models.CharField(db_column='Accion', max_length=200, blank=True, null=True)  # Field name made lowercase.
     fecha_modificacion = models.DateTimeField(db_column='Fecha_modificacion', blank=True, null=True)  # Field name made lowercase.
@@ -165,12 +163,11 @@ class HistorialProducto(models.Model):
     id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'historial_producto'
 
 
 class Inventario(models.Model):
-    id_producto = models.IntegerField(primary_key=True)
+    id_producto = models.AutoField(primary_key=True)
     img = models.CharField(max_length=300, blank=True, null=True)
     nombre_producto = models.CharField(max_length=200, blank=True, null=True)
     descripcion = models.CharField(max_length=500, blank=True, null=True)
@@ -187,53 +184,50 @@ class Inventario(models.Model):
     id_empresa = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'inventario'
 
 
 class RolUser(models.Model):
-    id_rol = models.IntegerField(db_column='Id_rol', primary_key=True)  # Field name made lowercase.
+    id_rol = models.AutoField(db_column='Id_rol', primary_key=True)  # Field name made lowercase.
     nombre_rol = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'rol_user'
 
 
+
 class Usuario(models.Model):
-    codigo_vendedor = models.IntegerField(db_column='Codigo_vendedor', primary_key=True)  # Field name made lowercase.
-    id_empresa = models.CharField(db_column='Id_empresa', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    password = models.CharField(db_column='Password', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    email = models.CharField(db_column='Email', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    id_rol = models.IntegerField(db_column='Id_rol', blank=True, null=True)  # Field name made lowercase.
+    codigo_vendedor = models.AutoField(db_column='Codigo_vendedor', primary_key=True, unique=True)
+    id_empresa = models.CharField(db_column='Id_empresa', max_length=200, blank=True, null=True)
+    password = models.CharField(db_column='Password', max_length=200, blank=True, null=True)
+    email = models.CharField(db_column='Email', max_length=200, blank=True, null=True,unique=True)
+    id_rol = models.IntegerField(db_column='Id_rol', blank=True, null=True)
+    codigo_de_confirmacion = models.CharField(unique=True, max_length=6)
 
     class Meta:
-        managed = False
         db_table = 'usuario'
 
 
 class VentaGeneral(models.Model):
-    id_venta_total = models.IntegerField(db_column='Id_venta_total', primary_key=True)  # Field name made lowercase.
-    codigo_vendedor = models.CharField(db_column='Codigo_vendedor', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    id_empresa = models.CharField(db_column='Id_Empresa', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    total = models.FloatField(db_column='Total', blank=True, null=True)  # Field name made lowercase.
-    fecha_venta = models.DateTimeField(db_column='Fecha_venta', blank=True, null=True)  # Field name made lowercase.
+    id_venta_total = models.AutoField(db_column='Id_venta_total', primary_key=True)  # Field name made lowercase.
+    codigo_vendedor = models.IntegerField(db_column='Codigo_vendedor',blank=False, null=False)  # Field name made lowercase.
+    id_empresa = models.CharField(db_column='Id_Empresa', max_length=200, blank=False, null=False)  # Field name made lowercase.
+    total = models.FloatField(db_column='Total', blank=False, null=False)  # Field name made lowercase.
+    fecha_venta = models.DateTimeField(db_column='Fecha_venta', blank=False, null=False)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'venta_general'
 
 
 class VentaProducto(models.Model):
-    id_venta_producto = models.IntegerField(db_column='Id_venta_producto', primary_key=True)  # Field name made lowercase.
-    id_venta_general = models.IntegerField(db_column='Id_venta_general', blank=True, null=True)  # Field name made lowercase.
-    id_empresa = models.IntegerField(db_column='Id_empresa', blank=True, null=True)  # Field name made lowercase.
-    codigo_vendedor = models.IntegerField(db_column='Codigo_vendedor', blank=True, null=True)  # Field name made lowercase.
-    field_id_producto = models.IntegerField(db_column='  id_producto', blank=True, null=True)  # Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
-    cantidad = models.IntegerField(db_column='Cantidad', blank=True, null=True)  # Field name made lowercase.
-    nombre_producto = models.CharField(db_column='Nombre_producto', max_length=200, blank=True, null=True)  # Field name made lowercase.
-    precio_unitario = models.FloatField(db_column='Precio_unitario', blank=True, null=True)  # Field name made lowercase.
+    id_venta_producto = models.AutoField(db_column='Id_venta_producto', primary_key=True)  # Field name made lowercase.
+    id_venta_general = models.IntegerField(db_column='Id_venta_general', blank=False, null=False)  # Field name made lowercase.
+    id_empresa = models.IntegerField(db_column='Id_empresa', blank=False, null=False)  # Field name made lowercase.
+    codigo_vendedor = models.IntegerField(db_column='Codigo_vendedor', blank=False, null=False)  # Field name made lowercase.
+    field_id_producto = models.IntegerField(db_column='  id_producto', blank=False, null=False)  # Field renamed to remove unsuitable characters. Field renamed because it started with '_'.
+    cantidad = models.IntegerField(db_column='Cantidad', blank=False, null=False)  # Field name made lowercase.
+    nombre_producto = models.CharField(db_column='Nombre_producto', max_length=200, blank=False, null=False)  # Field name made lowercase.
+    precio_unitario = models.FloatField(db_column='Precio_unitario', blank=False, null=False)  # Field name made lowercase.
 
     class Meta:
-        managed = False
         db_table = 'venta_producto'

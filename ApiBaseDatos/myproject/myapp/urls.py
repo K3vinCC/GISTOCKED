@@ -2,7 +2,7 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from django.urls import path, include
 # from .views import (login, registrar_usuario, InventarioListView)
-from .views import (login, registrar_usuario)
+from .views import *
 
 router = DefaultRouter()
 router.register(r'categorias', views.CategoriaViewSet)
@@ -20,5 +20,16 @@ urlpatterns = [
     path('registrar/', registrar_usuario, name='registrar_usuario'),
     # path('inventario/', InventarioListView.as_view(), name='inventario'),
     # path('vendedoreslog/', vendedores_login, name='vendedores_login'),
+    path('crear-usuario/', CrearUsuarioView.as_view(), name='crear_usuario'),
+    path('login-usuario/', LoginView.as_view(), name='login'),
+    path('categoria-empresa/', CategoriaView.as_view(), name='categoria'),
+    path('historial-producto-empresa/', HistorialProductoView.as_view(), name='historial_producto'),
+    path('inventario-empresa/', InventarioView.as_view(), name='inventario'),
+    path('usuario-empresa/', UsuarioView.as_view(), name='usuario'),
+    
+    path('crear-venta/', CrearVentaView.as_view(), name='crear_venta'),
+    path('detalle-venta/', DetalleVentaView.as_view(), name='detalle_venta'),
 ]
+
+
 urlpatterns += router.urls
